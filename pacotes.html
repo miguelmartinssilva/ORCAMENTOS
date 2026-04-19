@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pacotes | Miguel Martins</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+if (localStorage.getItem("miguel_admin_session") !== "on") {
+  window.location.href = "login.html";
+}
+</script>
+<style>
+:root{
+  --g1:#16a04b;--g2:#0e7a38;--g3:#1dd668;
+  --r1:#9b1c35;--r2:#c0253d;--r3:#ff4466;
+  --bg:#0b0b0f;--bg2:#111116;--bg3:#18181f;--bg4:#1e1e27;
+  --brd:#2a2a36;--brd2:#343444;
+  --tx:#eeeef5;--tx2:#9999b0;--tx3:#5a5a72;
+  --rad:14px;--rads:9px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:70px}
+
+/* HEADER MOBILE */
+header{background:linear-gradient(135deg,#0b2318 0%,#0d1a26 50%,#1a0b14 100%);padding:22px 18px 18px;text-align:center;border-bottom:1px solid var(--brd);position:relative;overflow:hidden}
+header::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 0%,rgba(22,160,75,.18),transparent);pointer-events:none}
+#logo-wrap{margin-bottom:10px}
+#logo-wrap img{max-width:90px;max-height:60px;object-fit:contain;border-radius:8px}
+header h1{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:2px;position:relative;line-height:1}
+header h1 em{font-style:normal;color:var(--g3);text-shadow:0 0 24px rgba(29,214,104,.5)}
+header p.sub{font-size:.68rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-top:4px;position:relative}
+.header-nav{display:none}
+
+/* LAYOUT */
+.page{max-width:1200px;margin:0 auto;padding:0 14px}
+.layout{display:flex;flex-direction:column}
+.col-form{min-width:0}
+.col-side{display:none}
+
+/* CARDS */
+.card{margin-top:14px;background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rad);overflow:hidden;animation:up .35s ease both}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.ch{display:flex;align-items:center;gap:9px;padding:11px 15px;background:var(--bg3);border-bottom:1px solid var(--brd);font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g3)}
+.cb{padding:13px 14px}
+.fg{margin-bottom:13px}
+.fg:last-child{margin-bottom:0}
+.lbl{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--tx2);margin-bottom:5px;font-weight:500}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;padding:10px 12px;background:var(--bg4);border:1.5px solid var(--brd);border-radius:var(--rads);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.9rem;transition:border-color .2s;appearance:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--g1)}
+input::placeholder,textarea::placeholder{color:var(--tx3)}
+textarea{resize:vertical;min-height:68px;line-height:1.5}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* PACOTES GRID */
+.pacotes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.pacote-card{display:flex;flex-direction:column;gap:6px;padding:13px 12px;background:var(--bg4);border:1.5px solid var(--brd);border-radius:var(--rads);cursor:pointer;transition:border-color .18s,background .18s;position:relative}
+.pacote-card:hover{border-color:var(--g2);background:rgba(22,160,75,.05)}
+.pacote-card.selecionado{border-color:var(--g1);background:rgba(22,160,75,.1)}
+.pacote-card.selecionado::after{content:'✓';position:absolute;top:8px;right:8px;width:20px;height:20px;background:var(--g1);color:#fff;border-radius:50%;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:1}
+.pacote-top{display:flex;align-items:flex-start;justify-content:space-between;gap:4px}
+.pacote-nome{font-size:.82rem;font-weight:700;color:var(--tx);line-height:1.3;padding-right:6px}
+.pacote-badge{flex-shrink:0;font-size:.62rem;font-weight:800;background:var(--g1);color:#fff;padding:2px 6px;border-radius:20px;white-space:nowrap}
+.pacote-desc{font-size:.72rem;color:var(--tx3);line-height:1.4}
+.pacote-precos{display:flex;align-items:baseline;gap:6px;margin-top:2px}
+.pacote-de{font-size:.75rem;color:var(--tx3);text-decoration:line-through}
+.pacote-por{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--g3)}
+.pacote-eco{font-size:.68rem;color:var(--g3);font-weight:600}
+
+/* ITENS SELECIONADOS */
+.sel-lista{display:grid;gap:6px;margin-bottom:10px}
+.sel-item{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:8px;padding:8px 10px;background:var(--bg4);border:1px solid var(--brd);border-radius:var(--rads);font-size:.84rem}
+.sel-nome{color:var(--tx);font-weight:500}
+.sel-qtd input{width:48px;padding:5px;font-size:.82rem;text-align:center;background:var(--bg);border:1.5px solid var(--brd);border-radius:7px;color:var(--tx);font-family:'Outfit',sans-serif}
+.sel-sub{color:var(--g3);font-weight:700;font-family:'Syne',sans-serif;font-size:.9rem;white-space:nowrap}
+.sel-del{background:none;border:none;color:var(--tx3);font-size:1.05rem;cursor:pointer;padding:2px 5px;border-radius:6px}
+.sel-del:hover{color:var(--r3)}
+.sel-vazio{text-align:center;color:var(--tx3);font-size:.82rem;padding:14px 0}
+
+/* RESUMO */
+.rl{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--brd);font-size:.85rem}
+.rl:last-child{border:none}
+.rl .k{color:var(--tx2)}
+.rl .v{font-weight:600;color:var(--tx)}
+.rl .v.g{color:var(--g3)}
+.total-box{background:linear-gradient(135deg,var(--g2),var(--r1));border-radius:12px;padding:16px;text-align:center;margin:12px 0 4px}
+.total-lbl{font-size:.63rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.6);margin-bottom:4px}
+.total-val{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:#fff;line-height:1}
+.total-val sup{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;vertical-align:super}
+
+/* AÇÕES MOBILE */
+.resumo-mobile{display:block}
+.acoes{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:14px 10px;border:none;border-radius:var(--rads);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s;text-align:center;width:100%}
+.btn:active{transform:scale(.97)}
+.btn-gerar{background:linear-gradient(135deg,var(--g1),var(--g3));color:#fff;box-shadow:0 4px 20px rgba(22,160,75,.3);grid-column:1/-1}
+.btn-wpp{background:linear-gradient(135deg,#1da851,#128c3b);color:#fff;box-shadow:0 4px 16px rgba(29,168,81,.3)}
+.btn-pdf{background:var(--bg3);border:1.5px solid var(--brd);color:var(--tx2)}
+.btn-limpar{background:var(--bg3);border:1.5px solid var(--brd);color:var(--tx3);grid-column:1/-1;font-size:.8rem;padding:9px}
+
+/* PROPOSTA */
+#proposta-wrap{display:none;margin-top:18px;animation:up .4s ease both}
+#proposta-wrap.on{display:block}
+.pc{background:var(--bg2);border:1px solid var(--g1);border-radius:var(--rad);overflow:hidden;box-shadow:0 0 40px rgba(22,160,75,.13)}
+.ph{background:linear-gradient(135deg,#0c2318,#14101e);padding:17px 17px 13px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.06)}
+.ph-l .pt{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--g3);letter-spacing:1px}
+.ph-l .pn{font-size:.72rem;color:var(--tx3);margin-top:3px}
+.ph-r{text-align:right}
+.ph-r .pnum{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--tx2)}
+.ph-r .pdata{font-size:.7rem;color:var(--tx3);margin-top:2px}
+.pb{padding:15px 16px}
+.pcli{margin-bottom:13px;padding-bottom:12px;border-bottom:1px solid var(--brd)}
+.pcli-nome{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--tx)}
+.pcli-sub{font-size:.76rem;color:var(--tx2);margin-top:3px}
+.ptbl{width:100%;border-collapse:collapse;font-size:.83rem;margin-bottom:11px}
+.ptbl th{padding:6px 7px;text-align:left;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);border-bottom:1px solid var(--brd);font-weight:600}
+.ptbl th.r{text-align:right}
+.ptbl td{padding:8px 7px;border-bottom:1px solid var(--brd);vertical-align:middle}
+.ptbl tr:last-child td{border:none}
+.ptbl .sv{text-align:right;font-weight:600;color:var(--g3)}
+.ptbl .in{font-weight:500}
+.ptbl .iq{color:var(--tx2);text-align:center}
+.ptbl .iu{color:var(--tx2);text-align:right}
+.phr{border:none;border-top:1px solid var(--brd);margin:11px 0}
+.padj-l{display:flex;justify-content:space-between;font-size:.81rem;padding:4px 0}
+.padj-l .pk{color:var(--tx2)}
+.padj-l .pv{font-weight:600;color:var(--tx)}
+.padj-l .pv.g{color:var(--g3)}
+.ptotal{background:linear-gradient(135deg,var(--g2),var(--r1));border-radius:10px;padding:14px;text-align:center;margin:9px 0 13px}
+.ptotal .ptl{font-size:.63rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.6);margin-bottom:4px}
+.ptotal .ptv{font-family:'Syne',sans-serif;font-size:2.1rem;font-weight:800;color:#fff}
+.ptotal .ptv sup{font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;vertical-align:super}
+.pobs{margin-top:9px;padding:10px 12px;background:rgba(22,160,75,.07);border:1px solid rgba(22,160,75,.2);border-radius:8px;font-size:.79rem;color:var(--tx2);line-height:1.5}
+.pobs strong{color:var(--g3);display:block;margin-bottom:3px}
+.pcond{font-size:.71rem;color:var(--tx2);line-height:1.6;background:var(--bg3);border-radius:8px;padding:10px 12px;border:1px solid var(--brd)}
+.pcond strong{color:var(--tx)}
+.passin{margin-top:17px;display:flex;justify-content:flex-end}
+.passin-b{text-align:center}
+.linha-a{width:160px;border-top:1.5px solid var(--brd2);margin-bottom:5px}
+.as-n{font-size:.77rem;font-weight:600;color:var(--tx)}
+.as-c{font-size:.67rem;color:var(--tx3)}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--g1);color:#fff;padding:10px 20px;border-radius:30px;font-size:.81rem;font-weight:600;transition:transform .28s ease;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+#toast.on{transform:translateX(-50%) translateY(0)}
+
+/* MENU MOBILE */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:62px;background:rgba(17,17,22,.97);border-top:1px solid var(--brd);display:flex;align-items:stretch;z-index:999;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:var(--tx2);transition:color .18s}
+.bn-item:hover,.bn-item.ativo{color:var(--g3)}
+.bn-icon{font-size:1.35rem;line-height:1}
+.bn-lbl{font-family:'Outfit',sans-serif;font-size:.62rem;letter-spacing:.8px;text-transform:uppercase;font-weight:500}
+
+/* ══════════════════════════════════════════
+   DESKTOP ≥ 800px — igual ao index.html
+   ══════════════════════════════════════════ */
+@media(min-width:800px){
+  body{padding-bottom:0}
+  .bottom-nav{display:none}
+
+  header{padding:14px 28px;text-align:left;display:flex;align-items:center;gap:18px}
+  header::after{display:none}
+  #logo-wrap{margin:0;flex-shrink:0}
+  #logo-wrap img{max-width:46px;max-height:36px}
+  header h1{font-size:1.45rem;letter-spacing:1px}
+  header p.sub{margin:0;font-size:.6rem}
+
+  .header-nav{display:flex;gap:4px;margin-left:auto}
+  .hn-item{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--tx2);padding:7px 13px;border-radius:9px;transition:all .18s;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:500;border:1px solid transparent}
+  .hn-item:hover{color:var(--g3);background:rgba(29,214,104,.06);border-color:var(--brd)}
+  .hn-item.ativo{color:var(--g3);background:rgba(29,214,104,.1);border-color:rgba(29,214,104,.3)}
+  .hn-icon{font-size:1rem;line-height:1}
+
+  .page{padding:0 24px}
+  .layout{
+    display:grid;
+    grid-template-columns:1fr 320px;
+    column-gap:20px;
+    align-items:start;
+    padding:14px 0 28px;
+  }
+  .col-form{min-width:0}
+
+  .col-side{
+    display:block;
+    position:sticky;
+    top:14px;
+    margin-top:14px;
+  }
+  .side-panel{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rad);overflow:hidden}
+
+  .resumo-mobile{display:none}
+  .acoes{display:none}
+
+  #proposta-wrap{grid-column:1/-1}
+
+  .side-resumo{padding:13px 15px}
+  .side-acoes{padding:0 13px 14px;display:grid;gap:8px}
+  .side-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:none;border-radius:var(--rads);font-family:'Syne',sans-serif;font-size:.86rem;font-weight:700;letter-spacing:.4px;cursor:pointer;transition:all .18s;width:100%}
+  .side-btn:active{transform:scale(.97)}
+  .side-btn-gerar{background:linear-gradient(135deg,var(--g1),var(--g3));color:#fff;box-shadow:0 4px 16px rgba(22,160,75,.3)}
+  .side-btn-wpp{background:linear-gradient(135deg,#1da851,#128c3b);color:#fff}
+  .side-btn-pdf{background:var(--bg3);border:1.5px solid var(--brd);color:var(--tx2)}
+  .side-btn-limpar{background:transparent;border:1px solid var(--brd);color:var(--tx3);font-size:.78rem;padding:8px}
+}
+
+@media(max-width:380px){
+  header h1{font-size:1.8rem}
+  .total-val{font-size:2.1rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div id="logo-wrap">
+    <img src="IMG/LOGO.png" alt="LOGO" width="90" height="60">
+  </div>
+  <div>
+    <h1>MIGUEL <em>MARTINS</em></h1>
+    <p class="sub">Pacotes de Serviços · Taipas do Tocantins</p>
+  </div>
+  <nav class="header-nav">
+    <a class="hn-item" href="index.html"><span class="hn-icon">🏠</span> Início</a>
+    <a class="hn-item ativo" href="pacotes.html"><span class="hn-icon">📦</span> Pacotes</a>
+    <a class="hn-item" href="historico.html"><span class="hn-icon">📚</span> Histórico</a>
+    <a class="hn-item" href="admin.html"><span class="hn-icon">⚙️</span> Admin</a>
+  </nav>
+</header>
+
+<div class="page">
+<div class="layout">
+
+  <!-- ═══ ESQUERDA: FORMULÁRIO ═══ -->
+  <div class="col-form">
+
+    <!-- DADOS DO CLIENTE -->
+    <div class="card" style="animation-delay:.04s">
+      <div class="ch"><span>👤</span> DADOS DO CLIENTE</div>
+      <div class="cb">
+        <div class="fg">
+          <label class="lbl">Nome do cliente *</label>
+          <input type="text" id="cli-nome" placeholder="Ex: Câmara Municipal de Taipas…"/>
+        </div>
+        <div class="g2">
+          <div class="fg">
+            <label class="lbl">Validade da proposta</label>
+            <input type="date" id="cli-validade"/>
+          </div>
+          <div class="fg">
+            <label class="lbl">Contato / WhatsApp</label>
+            <input type="text" id="cli-contato" placeholder="(63) 9 0000-0000"/>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="lbl">Observações (sai na proposta)</label>
+          <textarea id="obs" placeholder="Ex: Inclui revisões, entrega mensal…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESCOLHA OS PACOTES -->
+    <div class="card" style="animation-delay:.07s">
+      <div class="ch"><span>📦</span> ESCOLHA OS PACOTES</div>
+      <div class="cb">
+        <p style="font-size:.76rem;color:var(--tx2);margin-bottom:12px">Toque no pacote para selecionar. Ajuste a quantidade depois.</p>
+        <div id="pacotes-grid" class="pacotes-grid"></div>
+      </div>
+    </div>
+
+    <!-- ITENS SELECIONADOS -->
+    <div class="card" style="animation-delay:.10s">
+      <div class="ch"><span>🛒</span> ITENS SELECIONADOS</div>
+      <div class="cb">
+        <div id="sel-lista" class="sel-lista">
+          <div class="sel-vazio">Nenhum pacote selecionado ainda.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESCONTO -->
+    <div class="card" style="animation-delay:.12s">
+      <div class="ch"><span>⚙️</span> AJUSTE</div>
+      <div class="cb">
+        <div class="fg">
+          <label class="lbl">Desconto manual (%)</label>
+          <input type="number" id="desc" min="0" max="100" placeholder="0" oninput="recalcPac()"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMO MOBILE -->
+    <div class="card resumo-mobile" style="animation-delay:.14s">
+      <div class="ch"><span>💰</span> RESUMO</div>
+      <div class="cb">
+        <div class="rl"><span class="k">Subtotal</span><span class="v" id="r-sub">R$ 0,00</span></div>
+        <div class="rl"><span class="k">Desconto</span><span class="v g" id="r-desc">—</span></div>
+        <div class="total-box">
+          <div class="total-lbl">TOTAL FINAL</div>
+          <div class="total-val" id="r-total"><sup>R$</sup> 0,00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AÇÕES MOBILE -->
+    <div class="acoes">
+      <button class="btn btn-gerar" onclick="gerarPropostaPac()">📄 Gerar proposta</button>
+      <button class="btn btn-wpp"   onclick="enviarWppPac()">💬 Enviar no WhatsApp</button>
+      <button class="btn btn-pdf"   onclick="gerarPDFPac()">📄 Gerar PDF</button>
+      <button class="btn btn-limpar" onclick="limparPac()">🗑️ Limpar</button>
+    </div>
+
+  </div><!-- /col-form -->
+
+  <!-- ═══ DIREITA: PAINEL FIXO (desktop) ═══ -->
+  <div class="col-side">
+    <div class="side-panel">
+      <div class="ch"><span>💰</span> RESUMO</div>
+      <div class="side-resumo">
+        <div class="rl"><span class="k">Subtotal</span><span class="v" id="r-sub-d">R$ 0,00</span></div>
+        <div class="rl"><span class="k">Desconto</span><span class="v g" id="r-desc-d">—</span></div>
+        <div class="total-box">
+          <div class="total-lbl">TOTAL FINAL</div>
+          <div class="total-val" id="r-total-d"><sup>R$</sup> 0,00</div>
+        </div>
+      </div>
+      <div class="side-acoes">
+        <button class="side-btn side-btn-gerar" onclick="gerarPropostaPac()">📄 Gerar proposta</button>
+        <button class="side-btn side-btn-wpp"   onclick="enviarWppPac()">💬 Enviar no WhatsApp</button>
+        <button class="side-btn side-btn-pdf"   onclick="gerarPDFPac()">📄 Gerar PDF</button>
+        <button class="side-btn side-btn-limpar" onclick="limparPac()">🗑️ Limpar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPOSTA (full width no desktop) -->
+  <div id="proposta-wrap">
+    <div class="pc" id="proposta-el">
+      <div class="ph">
+        <div class="ph-l">
+          <div class="pt">PROPOSTA COMERCIAL</div>
+          <div class="pn">Miguel Martins · Designer Gráfico &amp; Videomaker</div>
+        </div>
+        <div class="ph-r">
+          <div class="pnum" id="p-num"></div>
+          <div class="pdata" id="p-data"></div>
+        </div>
+      </div>
+      <div class="pb">
+        <div class="pcli">
+          <div class="pcli-nome" id="p-cli-nome">—</div>
+          <div class="pcli-sub" id="p-cli-sub"></div>
+        </div>
+        <table class="ptbl">
+          <thead><tr>
+            <th>Pacote / Serviço</th><th class="r">Qtd</th><th class="r">Unit.</th><th class="r">Total</th>
+          </tr></thead>
+          <tbody id="p-itens"></tbody>
+        </table>
+        <hr class="phr"/>
+        <div id="p-adj"></div>
+        <div class="ptotal">
+          <div class="ptl">VALOR TOTAL DA PROPOSTA</div>
+          <div class="ptv" id="p-total"><sup>R$</sup> 0,00</div>
+        </div>
+        <div id="p-obs-w" style="display:none" class="pobs">
+          <strong>📝 Observações:</strong>
+          <span id="p-obs"></span>
+        </div>
+        <div class="pcond">
+          <strong>Condições:</strong> Proposta válida até <strong id="p-val">—</strong>. Pagamento: 50% na aprovação + 50% na entrega. Revisões conforme briefing aprovado. Alterações fora do escopo serão orçadas separadamente.
+        </div>
+        <div class="passin">
+          <div class="passin-b">
+            <div class="linha-a"></div>
+            <div class="as-n">Miguel Martins</div>
+            <div class="as-c">Designer Gráfico &amp; Videomaker</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+</div><!-- /page -->
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+/* ════════════════════════════════════════════════
+   LÓGICA DA PÁGINA DE PACOTES
+   ════════════════════════════════════════════════ */
+
+const $p   = id => document.getElementById(id);
+const fmtP = v  => v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const RSP  = v  => "R$ " + fmtP(v);
+
+let selecao = {};
+
+(function() {
+  const d = new Date();
+  d.setDate(d.getDate() + 7);
+  $p("cli-validade").value = d.toISOString().split("T")[0];
+  renderGridPacotes();
+})();
+
+function renderGridPacotes() {
+  const wrap = $p("pacotes-grid");
+  if (!wrap) return;
+  const pacotes  = getPacotes();
+  const servicos = getServicos();
+
+  wrap.innerHTML = pacotes.map(p => {
+    const srv       = servicos.find(s => s.nome === p.servico);
+    const precoNorm = srv ? srv.preco * p.qtd : p.precoTotal;
+    const economia  = precoNorm - p.precoTotal;
+    const pct       = precoNorm > 0 ? Math.round((economia / precoNorm) * 100) : 0;
+    const sel       = selecao[p.id] !== undefined;
+
+    return `
+      <div class="pacote-card ${sel ? "selecionado" : ""}" onclick="togglePacote(${p.id})" id="pcard-${p.id}">
+        <div class="pacote-top">
+          <span class="pacote-nome">${p.nome}</span>
+          ${economia > 0 ? `<span class="pacote-badge">-${pct}%</span>` : ""}
+        </div>
+        <span class="pacote-desc">${p.descricao}</span>
+        <div class="pacote-precos">
+          ${economia > 0 ? `<span class="pacote-de">${RSP(precoNorm)}</span>` : ""}
+          <span class="pacote-por">${RSP(p.precoTotal)}</span>
+        </div>
+        ${economia > 0 ? `<span class="pacote-eco">💰 Economia de ${RSP(economia)}</span>` : ""}
+      </div>
+    `;
+  }).join("");
+}
+
+function togglePacote(id) {
+  if (selecao[id] !== undefined) { delete selecao[id]; }
+  else { selecao[id] = 1; }
+  renderGridPacotes();
+  renderSelLista();
+  recalcPac();
+}
+
+function renderSelLista() {
+  const wrap    = $p("sel-lista");
+  const pacotes = getPacotes();
+  const ids     = Object.keys(selecao).map(Number);
+
+  if (!ids.length) {
+    wrap.innerHTML = `<div class="sel-vazio">Nenhum pacote selecionado ainda.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = ids.map(id => {
+    const p   = pacotes.find(x => x.id === id);
+    if (!p) return "";
+    const qtd = selecao[id] || 1;
+    const sub = p.precoTotal * qtd;
+    return `
+      <div class="sel-item">
+        <span class="sel-nome">${p.nome}</span>
+        <div class="sel-qtd">
+          <input type="number" min="1" value="${qtd}"
+            onchange="setQtdPac(${id}, this.value)"
+            oninput="setQtdPac(${id}, this.value)"
+            onclick="event.stopPropagation()"/>
+        </div>
+        <span class="sel-sub">${RSP(sub)}</span>
+        <button class="sel-del" onclick="togglePacote(${id})">×</button>
+      </div>
+    `;
+  }).join("");
+}
+
+function setQtdPac(id, val) {
+  const n = parseInt(val) || 1;
+  selecao[id] = n < 1 ? 1 : n;
+  renderSelLista();
+  recalcPac();
+}
+
+function recalcPac() {
+  const pacotes = getPacotes();
+  const descPct = parseFloat($p("desc") ? $p("desc").value : 0) || 0;
+  let sub = 0;
+
+  Object.entries(selecao).forEach(([id, qtd]) => {
+    const p = pacotes.find(x => x.id === parseInt(id));
+    if (p) sub += p.precoTotal * qtd;
+  });
+
+  const total = Math.round(sub * (1 - descPct / 100) * 100) / 100;
+
+  // Atualiza mobile
+  $p("r-sub").textContent   = RSP(sub);
+  $p("r-desc").textContent  = descPct > 0 ? "-" + descPct + "%" : "—";
+  $p("r-total").innerHTML   = "<sup>R$</sup> " + fmtP(total);
+
+  // Espelha para sidebar desktop
+  $p("r-sub-d").textContent  = RSP(sub);
+  $p("r-desc-d").textContent = descPct > 0 ? "-" + descPct + "%" : "—";
+  $p("r-total-d").innerHTML  = "<sup>R$</sup> " + fmtP(total);
+
+  return { sub, descPct, total };
+}
+
+function montarOrcPac() {
+  const d       = recalcPac();
+  const pacotes = getPacotes();
+  const now     = new Date();
+  const itens   = Object.entries(selecao).map(([id, qtd]) => {
+    const p = pacotes.find(x => x.id === parseInt(id));
+    if (!p) return null;
+    return { desc: p.nome + " · " + p.descricao, qtd, unit: p.precoTotal, sub: p.precoTotal * qtd };
+  }).filter(Boolean);
+
+  return {
+    id:       Date.now(),
+    numero:   "MM-PAC-" + now.getFullYear() + String(now.getMonth()+1).padStart(2,"0") + String(now.getDate()).padStart(2,"0") + "-" + String(now.getHours()).padStart(2,"0") + String(now.getMinutes()).padStart(2,"0"),
+    data:     now.toLocaleDateString("pt-BR"),
+    cliente:  $p("cli-nome").value.trim()    || "(cliente não informado)",
+    contato:  $p("cli-contato").value.trim() || "",
+    validade: $p("cli-validade").value,
+    obs:      $p("obs").value.trim(),
+    itens,
+    subtotal: d.sub,
+    total:    d.total,
+    descPct:  d.descPct,
+    tipo:     "Pacotes",
+    tipoFator: 1, cxFator: 1, urgFator: 1, freqFator: 1,
+  };
+}
+
+function gerarPropostaPac() {
+  const ids = Object.keys(selecao);
+  if (!ids.length) { toast("Selecione pelo menos 1 pacote", "#c0253d"); return; }
+  const orc = montarOrcPac();
+
+  const hist = getHistorico();
+  hist.unshift(orc);
+  localStorage.setItem("historico_orcamentos_miguel", JSON.stringify(hist));
+
+  $p("p-num").textContent      = "#" + orc.numero;
+  $p("p-data").textContent     = orc.data;
+  $p("p-cli-nome").textContent = orc.cliente;
+  $p("p-cli-sub").textContent  = orc.contato || "Pacotes de Serviços";
+
+  $p("p-itens").innerHTML = orc.itens.map(l =>
+    `<tr>
+      <td class='in'>${l.desc}</td>
+      <td class='iq'>${l.qtd}x</td>
+      <td class='iu'>${RSP(l.unit)}</td>
+      <td class='sv'>${RSP(l.sub)}</td>
+    </tr>`
+  ).join("");
+
+  const adjs = [];
+  if (orc.descPct > 0) adjs.push(`<div class='padj-l'><span class='pk'>Desconto</span><span class='pv g'>-${orc.descPct}%</span></div>`);
+  $p("p-adj").innerHTML = adjs.join("");
+  $p("p-total").innerHTML = "<sup>R$</sup> " + fmtP(orc.total);
+
+  if (orc.obs) { $p("p-obs").textContent = orc.obs; $p("p-obs-w").style.display = "block"; }
+  else          { $p("p-obs-w").style.display = "none"; }
+
+  $p("p-val").textContent = orc.validade
+    ? new Date(orc.validade + "T12:00:00").toLocaleDateString("pt-BR")
+    : "(não definida)";
+
+  $p("proposta-wrap").style.display = "block";
+  $p("proposta-wrap").classList.add("on");
+  setTimeout(() => $p("proposta-wrap").scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+  toast("Proposta gerada e salva!");
+}
+
+function enviarWppPac() {
+  const ids = Object.keys(selecao);
+  if (!ids.length) { toast("Selecione pelo menos 1 pacote", "#c0253d"); return; }
+  const orc = montarOrcPac();
+  const numero = (orc.contato || "").replace(/\D/g, "");
+  if (!numero) { toast("Digite o WhatsApp do cliente", "#c0253d"); return; }
+  let num = numero.startsWith("55") ? numero : "55" + numero;
+  let m = "Olá! Segue a proposta de *Miguel Martins*:\n\n";
+  if (orc.cliente) m += "*Cliente:* " + orc.cliente + "\n";
+  m += "*Data:* " + orc.data + "\n\n*PACOTES*\n";
+  orc.itens.forEach(l => { m += "- " + l.desc + "\n  " + l.qtd + "x " + RSP(l.unit) + " = *" + RSP(l.sub) + "*\n"; });
+  m += "\n*TOTAL: " + RSP(orc.total) + "*\n";
+  const valStr = orc.validade ? new Date(orc.validade + "T12:00:00").toLocaleDateString("pt-BR") : "7 dias";
+  m += "*Validade:* " + valStr + "\n";
+  if (orc.obs) m += "\n*Obs:* " + orc.obs + "\n";
+  window.open("https://wa.me/" + num + "?text=" + encodeURIComponent(m), "_blank");
+}
+
+async function gerarPDFPac() {
+  const ids = Object.keys(selecao);
+  if (!ids.length) { toast("Selecione pelo menos 1 pacote", "#c0253d"); return; }
+  if (!$p("proposta-wrap").classList.contains("on")) {
+    gerarPropostaPac();
+    await new Promise(r => setTimeout(r, 400));
+  }
+  toast("Gerando PDF...", "#1a4a7a");
+  try {
+    const orc = montarOrcPac();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+    const W = 210, H = 297, ml = 16, mr = 16, cw = W - ml - mr;
+    let y = 0;
+    const h2rgb = h => {
+      if (!h || !h.startsWith("#")) return [200,200,200];
+      if (h.length === 4) h = "#"+h[1]+h[1]+h[2]+h[2]+h[3]+h[3];
+      return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+    };
+    const F = h => doc.setFillColor(...h2rgb(h));
+    const S = h => doc.setDrawColor(...h2rgb(h));
+    const C = h => doc.setTextColor(...h2rgb(h));
+    const bold = s => doc.setFont("helvetica", s === false ? "normal" : "bold");
+    const size = n => doc.setFontSize(n);
+
+    F("#0b0b0f"); doc.rect(0,0,W,H,"F");
+    F("#16a04b"); doc.rect(0,0,4,H,"F");
+    F("#0d1a0f"); doc.rect(4,0,W-4,52,"F");
+    F("#1dd668"); doc.rect(4,52,W-4,0.8,"F");
+
+    await new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload  = () => { try { doc.addImage(img,"PNG",ml,8,26,26); } catch(e){} resolve(); };
+      img.onerror = () => resolve();
+      img.src = "IMG/LOGO.png";
+    });
+
+    C("#1dd668"); bold(); size(22); doc.text("MIGUEL MARTINS", W-mr, 20, { align:"right" });
+    C("#9999b0"); bold(false); size(7.5); doc.text("DESIGNER GRÁFICO & VIDEOMAKER", W-mr, 27, { align:"right" });
+    C("#5a5a72"); size(6.5); doc.text("Taipas do Tocantins  .  TO  .  Brasil", W-mr, 33, { align:"right" });
+    F("#16a04b"); doc.roundedRect(ml,38,72,9,2,2,"F");
+    C("#ffffff"); bold(); size(7.5); doc.text("PROPOSTA DE PACOTES", ml+36, 44, { align:"center" });
+    C("#9999b0"); bold(false); size(7.5); doc.text("Nº " + orc.numero, W-mr, 43, { align:"right" });
+    C("#5a5a72"); size(6.5); doc.text("Emitida em: " + orc.data, W-mr, 49, { align:"right" });
+
+    y = 62;
+    F("#111116"); S("#1dd668"); doc.setLineWidth(0.4);
+    doc.roundedRect(ml,y,cw,26,3,3,"FD");
+    F("#1dd668"); doc.roundedRect(ml,y,3,26,2,2,"F");
+    C("#9999b0"); bold(false); size(6.5); doc.text("DESTINATÁRIO", ml+8, y+7);
+    C("#eeeef5"); bold(); size(12); doc.text(orc.cliente, ml+8, y+15);
+    if (orc.contato) { C("#9999b0"); bold(false); size(7.5); doc.text(orc.contato, ml+8, y+22); }
+    y += 34;
+
+    F("#1a1a24"); doc.roundedRect(ml,y,cw,9,2,2,"F");
+    C("#1dd668"); bold(); size(7);
+    doc.text("PACOTE / SERVIÇO", ml+4, y+6);
+    doc.text("QTD", ml+96, y+6, { align:"right" });
+    doc.text("UNIT.", ml+128, y+6, { align:"right" });
+    doc.text("SUBTOTAL", ml+cw-1, y+6, { align:"right" });
+    y += 12;
+
+    orc.itens.forEach((l, i) => {
+      if (i%2===0) { F("#111116"); doc.rect(ml,y-1,cw,12,"F"); }
+      F("#16a04b"); doc.rect(ml,y-1,2,12,"F");
+      C("#eeeef5"); bold(false); size(8); doc.text(l.desc, ml+5, y+5);
+      C("#9999b0"); size(7.5); doc.text(l.qtd+"x", ml+96, y+5, { align:"right" });
+      doc.text(RSP(l.unit), ml+128, y+5, { align:"right" });
+      C("#1dd668"); bold(); size(8.5); doc.text(RSP(l.sub), ml+cw-1, y+5, { align:"right" });
+      y += 12;
+    });
+
+    S("#2a2a36"); doc.setLineWidth(0.3); doc.line(ml,y,W-mr,y);
+    y += 6;
+    if (orc.descPct > 0) {
+      C("#9999b0"); bold(false); size(7.5); doc.text("Subtotal:", ml+cw-50, y);
+      doc.text(RSP(orc.subtotal), ml+cw-1, y, { align:"right" }); y += 5;
+      C("#1dd668"); doc.text("Desconto -"+orc.descPct+"%:", ml+cw-50, y);
+      doc.text("-"+RSP(orc.subtotal - orc.total), ml+cw-1, y, { align:"right" }); y += 5;
+    }
+
+    F("#0a3d20"); doc.roundedRect(ml,y,cw,26,3,3,"F");
+    S("#1dd668"); doc.setLineWidth(0.5); doc.roundedRect(ml,y,cw,26,3,3,"S");
+    C("#aaffcc"); bold(false); size(6.5); doc.text("VALOR TOTAL DA PROPOSTA", W/2, y+8, { align:"center" });
+    C("#ffffff"); bold(); size(20); doc.text("R$ " + fmtP(orc.total), W/2, y+20, { align:"center" });
+    y += 34;
+
+    if (orc.obs) {
+      const obsLines = doc.splitTextToSize(orc.obs, cw-12);
+      const obsH = 14 + obsLines.length*5;
+      F("#0b1a0f"); S("#16a04b"); doc.setLineWidth(0.3);
+      doc.roundedRect(ml,y,cw,obsH,2,2,"FD");
+      F("#16a04b"); doc.roundedRect(ml,y,3,obsH,2,2,"F");
+      C("#1dd668"); bold(); size(7); doc.text("OBSERVAÇÕES", ml+8, y+7);
+      C("#9999b0"); bold(false); size(7.5); doc.text(obsLines, ml+8, y+13);
+      y += obsH+8;
+    }
+
+    const valStr = orc.validade ? new Date(orc.validade+"T12:00:00").toLocaleDateString("pt-BR") : "não definida";
+    const conds = [
+      "Validade desta proposta: " + valStr,
+      "Pagamento: 50% na aprovação + 50% na entrega.",
+      "Revisões incluídas conforme briefing aprovado.",
+      "Alterações fora do escopo serão orçadas separadamente.",
+    ];
+    F("#111116"); S("#2a2a36"); doc.setLineWidth(0.3);
+    doc.roundedRect(ml,y,cw,6+conds.length*5+4,2,2,"FD");
+    C("#eeeef5"); bold(); size(7); doc.text("CONDIÇÕES GERAIS", ml+4, y+6);
+    C("#9999b0"); bold(false); size(7);
+    conds.forEach((c, i) => { doc.text("- "+c, ml+4, y+12+i*5); });
+    y += 6+conds.length*5+10;
+
+    const asX = W-mr-58;
+    S("#343444"); doc.setLineWidth(0.5); doc.line(asX,y,W-mr,y);
+    C("#eeeef5"); bold(); size(8); doc.text("Miguel Martins", asX+29, y+6, { align:"center" });
+    C("#9999b0"); bold(false); size(6.5);
+    doc.text("Designer Gráfico & Videomaker", asX+29, y+11, { align:"center" });
+    doc.text("Taipas do Tocantins - TO", asX+29, y+16, { align:"center" });
+
+    F("#0d1a0f"); doc.rect(4,H-12,W-4,12,"F");
+    F("#1dd668"); doc.rect(4,H-12,W-4,0.6,"F");
+    C("#9999b0"); bold(false); size(6.5);
+    doc.text("Miguel Martins  .  Designer Gráfico & Videomaker  .  Taipas do Tocantins - TO", W/2, H-6, { align:"center" });
+    C("#5a5a72"); size(6);
+    doc.text("Documento gerado em "+orc.data+"  .  "+orc.numero, W/2, H-2, { align:"center" });
+
+    const nomeArq = orc.cliente.replace(/\s+/g,"-").toLowerCase().replace(/[^a-z0-9\-]/g,"");
+    doc.save("proposta-pacotes-"+nomeArq+".pdf");
+    toast("PDF gerado!", "#16a04b");
+  } catch(e) { console.error(e); toast("Erro ao gerar PDF", "#c0253d"); }
+}
+
+function limparPac() {
+  selecao = {};
+  $p("cli-nome").value    = "";
+  $p("cli-contato").value = "";
+  $p("obs").value         = "";
+  $p("desc").value        = "";
+  const d = new Date();
+  d.setDate(d.getDate() + 7);
+  $p("cli-validade").value = d.toISOString().split("T")[0];
+  $p("proposta-wrap").style.display = "none";
+  $p("proposta-wrap").classList.remove("on");
+  renderGridPacotes();
+  renderSelLista();
+  recalcPac();
+  toast("Limpo!", "#5a5a72");
+}
+</script>
+
+<!-- Menu MOBILE -->
+<nav class="bottom-nav">
+  <a class="bn-item" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">Início</span></a>
+  <a class="bn-item ativo" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">Pacotes</span></a>
+  <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">Histórico</span></a>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">⚙️</span><span class="bn-lbl">Admin</span></a>
+</nav>
+
+</body>
+</html>

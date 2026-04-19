@@ -56,3 +56,9 @@ function renderStats() {
 }
 
 renderStats();
+
+// Carregar funções de serviços e pacotes do app.js
+(function loadAdminModules() {
+  if (typeof renderAdminServicos === "function") renderAdminServicos();
+  if (typeof renderAdminPacotes  === "function") renderAdminPacotes();
+})();

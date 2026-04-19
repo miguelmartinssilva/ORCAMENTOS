@@ -37,7 +37,7 @@ body{
   text-transform:uppercase;
 }
 .hist-wrap{
-  max-width:920px;
+  max-width:1100px;
   margin:0 auto;
   padding:20px 14px 60px;
 }
@@ -181,4 +181,30 @@ body{
 .bn-item:hover,
 .bn-item.ativo {
   color: var(--g3);
+}
+
+/* ── Botões duplicar / editar ── */
+.btn-dup {
+  background: rgba(26,74,122,.18);
+  color: #6aaeff;
+  border: 1px solid rgba(80,150,255,.3) !important;
+}
+.btn-dup:hover { background: rgba(26,74,122,.35); }
+
+.btn-edit {
+  background: rgba(255,180,0,.1);
+  color: #ffb400;
+  border: 1px solid rgba(255,180,0,.3) !important;
+}
+.btn-edit:hover { background: rgba(255,180,0,.22); }
+
+@media(min-width:760px){
+  .hist-list{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media(min-width:1100px){
+  .hist-list{
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

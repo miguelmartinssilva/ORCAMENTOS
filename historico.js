@@ -19,6 +19,16 @@ function money(v) {
   })}`;
 }
 
+function duplicarOrc(id) {
+  localStorage.setItem("orcamento_carregar", JSON.stringify({ id: id, modo: "duplicar" }));
+  window.location.href = "index.html";
+}
+
+function editarOrc(id) {
+  localStorage.setItem("orcamento_carregar", JSON.stringify({ id: id, modo: "editar" }));
+  window.location.href = "index.html";
+}
+
 function apagarHistorico(id) {
   const lista = getHistorico().filter((item) => item.id !== id);
   saveHistorico(lista);
@@ -65,6 +75,8 @@ function renderHistorico() {
           ${orc.obs ? `<div class="hist-obs"><strong>Obs:</strong> ${orc.obs}</div>` : ""}
 
           <div class="hist-actions">
+            <button class="btn-mini btn-dup"    onclick="duplicarOrc(${orc.id})">⧉ Duplicar</button>
+            <button class="btn-mini btn-edit"   onclick="editarOrc(${orc.id})">✎ Editar</button>
             <button class="btn-mini btn-delete" onclick="apagarHistorico(${orc.id})">Excluir</button>
           </div>
         </article>

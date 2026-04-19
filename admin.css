@@ -113,7 +113,7 @@ input:focus{
   line-height:1.5;
 }
 .admin-header{
-  max-width:980px;
+  max-width:1100px;
   margin:0 auto 20px;
   display:flex;
   justify-content:space-between;
@@ -121,10 +121,18 @@ input:focus{
   gap:12px;
 }
 .admin-wrap{
-  max-width:980px;
+  max-width:1100px;
   margin:0 auto;
   display:grid;
   gap:16px;
+}
+@media(min-width:760px){
+  .admin-wrap{
+    grid-template-columns:1fr 1fr;
+  }
+  .admin-wrap > .admin-card:first-child{
+    grid-column:1/-1;
+  }
 }
 .admin-card{
   padding:20px;
@@ -211,3 +219,66 @@ input:focus{
   text-transform: uppercase;
   font-weight: 500;
 }
+/* ── Admin serviços ── */
+.srv-admin-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 6px;
+  align-items: center;
+}
+.srv-admin-row input {
+  padding: 8px 10px;
+  font-size: .8rem;
+}
+.srv-admin-del {
+  background: rgba(155,28,53,.18);
+  color: var(--r3);
+  border: 1px solid rgba(255,68,102,.2);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.srv-admin-del:hover { background: rgba(155,28,53,.4); }
+
+/* ── Admin pacotes ── */
+.pacote-admin-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 0.7fr 1fr auto;
+  gap: 6px;
+  align-items: center;
+  background: var(--bg4);
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--brd);
+}
+.pacote-admin-row input,
+.pacote-admin-row select {
+  padding: 7px 9px;
+  font-size: .8rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--brd);
+  background: var(--bg);
+  color: var(--tx);
+  font-family: 'Outfit', sans-serif;
+}
+.pacote-admin-row input:focus,
+.pacote-admin-row select:focus { outline: none; border-color: var(--g1); }
+.pac-desc { grid-column: 1 / -2; }
+
+/* ── Botões dup/editar no histórico ── */
+.btn-dup, .btn-edit {
+  padding: 5px 10px;
+  font-size: .75rem;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1px solid;
+  transition: all .15s;
+}
+.btn-dup { background: rgba(26,74,122,.18); border-color: rgba(80,150,255,.3); color: #6aaeff; }
+.btn-dup:hover { background: rgba(26,74,122,.35); }
+.btn-edit { background: rgba(255,180,0,.1); border-color: rgba(255,180,0,.3); color: #ffb400; }
+.btn-edit:hover { background: rgba(255,180,0,.22); }
