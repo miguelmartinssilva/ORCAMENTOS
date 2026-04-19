@@ -266,10 +266,7 @@ function limpar() {
   toast("🗑️ Formulário limpo!", "#5a5a72");
 }
 
-$("inp-logo").addEventListener("change", function () {
-  const f = this.files[0];
-  if (!f) return;
-
+function mudarLogo(f) {
   const r = new FileReader();
   r.onload = (e) => {
     const img = $("logo-preview");
@@ -278,7 +275,42 @@ $("inp-logo").addEventListener("change", function () {
     $("btn-logo").textContent = "✏️ Trocar logo";
   };
   r.readAsDataURL(f);
-});
+}
+
+async function gerarPNG() {
+  const d = recalc();
+  if (!d.ls.length) {
+    toast("⚠️ Adicione pelo menos 1 serviço", "#c0253d");
+    return;
+  }
+
+  if (!$("proposta-wrap").classList.contains("on")) {
+    gerarProposta();
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  toast("⏳ Gerando imagem…", "#1a4a7a");
+
+  try {
+    const el = $("proposta-el");
+    const canvas = await html2canvas(el, {
+      backgroundColor: "#111116",
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+
+    const link = document.createElement("a");
+    link.download = `proposta-miguel-${Date.now()}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    toast("✅ Imagem baixada!", "#16a04b");
+  } catch (e) {
+    console.error(e);
+    toast("❌ Erro ao gerar imagem", "#c0253d");
+  }
+}
 
 window.addRow = addRow;
 window.delRow = delRow;
@@ -286,6 +318,7 @@ window.recalc = recalc;
 window.gerarProposta = gerarProposta;
 window.enviarWpp = enviarWpp;
 window.gerarPDF = gerarPDF;
+window.gerarPNG = gerarPNG;
 window.limpar = limpar;
 
 addRow("", 1, 200);
