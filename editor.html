@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Editor de Proposta | Miguel Martins</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+if (localStorage.getItem("miguel_admin_session") !== "on") {
+  window.location.href = "login.html";
+}
+</script>
+<style>
+:root{
+  --g1:#16a04b;--g2:#0e7a38;--g3:#1dd668;
+  --r1:#9b1c35;--r2:#c0253d;--r3:#ff4466;
+  --bg:#0b0b0f;--bg2:#111116;--bg3:#18181f;--bg4:#1e1e27;
+  --brd:#2a2a36;--brd2:#343444;
+  --tx:#eeeef5;--tx2:#9999b0;--tx3:#5a5a72;
+  --rad:14px;--rads:9px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:80px}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:200;background:var(--bg2);border-bottom:1px solid var(--brd);padding:10px 14px;display:flex;align-items:center;gap:10px}
+.topbar-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:1px;color:var(--g3);flex:1}
+.topbar-title span{color:var(--tx2);font-weight:400;font-size:.75rem;margin-left:6px}
+.btn-top{padding:8px 14px;border-radius:var(--rads);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;border:1.5px solid var(--brd);background:var(--bg4);color:var(--tx2);transition:.15s;white-space:nowrap}
+.btn-top:hover{background:var(--bg3);color:var(--tx)}
+.btn-top.primary{background:linear-gradient(135deg,var(--g2),var(--g1));color:#fff;border:none;font-weight:700;font-size:.82rem}
+.btn-top.primary:hover{opacity:.9}
+
+/* ── LAYOUT ── */
+.page{max-width:860px;margin:0 auto;padding:14px}
+.split{display:flex;flex-direction:column;gap:14px}
+@media(min-width:760px){
+  .split{flex-direction:row;align-items:flex-start}
+  .col-tools{width:200px;flex-shrink:0;position:sticky;top:60px}
+  .col-preview{flex:1;min-width:0}
+}
+
+/* ── PAINEL DE FERRAMENTAS ── */
+.tools-card{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rad);overflow:hidden}
+.tools-title{font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g3);padding:10px 13px;background:var(--bg3);border-bottom:1px solid var(--brd)}
+.tools-body{padding:10px}
+.tool-btn{width:100%;padding:9px 12px;margin-bottom:6px;background:var(--bg4);border:1.5px solid var(--brd);border-radius:var(--rads);color:var(--tx2);font-family:'Outfit',sans-serif;font-size:.78rem;cursor:pointer;transition:.15s;text-align:left;display:flex;align-items:center;gap:8px}
+.tool-btn:hover{background:var(--bg3);color:var(--tx);border-color:var(--brd2)}
+.tool-btn:last-child{margin-bottom:0}
+.tool-btn .ti{font-size:1rem;flex-shrink:0}
+.tool-sep{border:none;border-top:1px solid var(--brd);margin:8px 0}
+.tool-hint{font-size:.68rem;color:var(--tx3);line-height:1.5;padding:4px 2px}
+
+/* ── PREVIEW / PROPOSTA ── */
+.proposta-card{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rad);overflow:hidden}
+.proposta-inner{background:#111116;border-left:4px solid var(--g1);min-height:600px}
+
+/* HEADER DO DOCUMENTO */
+.doc-header{background:linear-gradient(135deg,#0d1a0f 0%,#0b1520 60%,#1a0b14 100%);padding:18px 20px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:2px solid var(--g1)}
+.doc-logo-wrap{display:flex;align-items:center;gap:10px}
+.doc-logo{max-width:70px;max-height:50px;object-fit:contain;border-radius:6px;cursor:pointer}
+.doc-logo-btn{font-size:.65rem;color:var(--g3);background:none;border:1px solid var(--g2);border-radius:6px;padding:3px 7px;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:4px;display:block;white-space:nowrap}
+.doc-info{text-align:right}
+.doc-nome{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:1.5px;color:var(--g3)}
+.doc-sub{font-size:.65rem;color:var(--tx3);margin-top:2px}
+.doc-contato-info{font-size:.6rem;color:var(--tx3);margin-top:3px}
+
+/* BADGE PROPOSTA */
+.doc-badge-row{background:#0d1a0f;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--brd)}
+.doc-badge{background:var(--g1);color:#fff;font-family:'Syne',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:2px;padding:4px 12px;border-radius:4px}
+.doc-num-data{text-align:right}
+.doc-num{font-size:.75rem;color:var(--tx2)}
+.doc-data{font-size:.65rem;color:var(--tx3);margin-top:1px}
+
+/* SEÇÕES DO DOCUMENTO */
+.doc-section{padding:14px 20px;border-bottom:1px solid var(--brd)}
+.doc-section:last-child{border-bottom:none}
+.doc-label{font-size:.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--g3);font-weight:700;margin-bottom:6px}
+
+/* CLIENTE */
+.doc-cliente-box{background:var(--bg3);border-left:3px solid var(--g1);border-radius:0 6px 6px 0;padding:10px 14px}
+.doc-cli-nome{font-size:1rem;font-weight:700;color:var(--tx)}
+.doc-cli-sub{font-size:.75rem;color:var(--tx2);margin-top:2px}
+
+/* ITENS - TABELA */
+.doc-tbl{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:4px}
+.doc-tbl thead th{padding:7px 6px;text-align:left;font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);border-bottom:1px solid var(--brd);background:var(--bg3)}
+.doc-tbl thead th.r{text-align:right}
+.doc-tbl tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
+.ed-item-row td{padding:6px}
+.ed-td-desc{min-width:120px}
+.ed-td-qtd,.ed-td-unit{width:64px}
+.ed-td-sub{width:80px;text-align:right;font-weight:600;color:var(--g3);white-space:nowrap}
+.ed-td-del{width:24px;text-align:center}
+.ed-cel{min-height:22px;padding:3px 4px;border-radius:4px;outline:none;border:1.5px solid transparent;transition:border-color .15s;line-height:1.4;color:var(--tx)}
+.ed-cel:focus{border-color:var(--g1);background:rgba(22,160,75,.06)}
+.ed-inp-num{width:100%;background:var(--bg4);border:1.5px solid var(--brd);border-radius:6px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:.8rem;padding:4px 6px;text-align:center;appearance:textfield;-moz-appearance:textfield}
+.ed-inp-num:focus{outline:none;border-color:var(--g1)}
+.ed-inp-num::-webkit-outer-spin-button,.ed-inp-num::-webkit-inner-spin-button{display:none}
+.ed-val{color:var(--g3);font-weight:600}
+.ed-btn-del{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:1rem;padding:2px 4px;border-radius:4px;line-height:1}
+.ed-btn-del:hover{color:var(--r3)}
+.ed-btn-add-item{width:100%;padding:7px;background:rgba(22,160,75,.07);border:1.5px dashed var(--g2);color:var(--g3);border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:500;margin-top:6px;transition:.18s}
+.ed-btn-add-item:hover{background:rgba(22,160,75,.16)}
+
+/* RESUMO */
+.ed-adj{display:flex;justify-content:space-between;font-size:.75rem;color:var(--tx2);padding:3px 0}
+.ed-adj-v{font-weight:600}
+.ed-r{color:var(--r3)}
+.ed-g{color:var(--g3)}
+.ed-sub-row{display:flex;justify-content:space-between;font-size:.75rem;color:var(--tx3);padding:3px 0}
+.doc-total-box{background:linear-gradient(135deg,#0a3d20,#1a0b14);border:1px solid var(--g1);border-radius:8px;padding:12px;text-align:center;margin:10px 0 0}
+.doc-total-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.5);margin-bottom:4px}
+.doc-total-val{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#fff}
+.doc-total-val sup{font-size:.9rem;font-weight:700;vertical-align:super}
+
+/* PIX */
+.doc-pix-box{background:#0b2318;border:1px solid var(--g2);border-radius:6px;padding:8px 12px;margin-top:10px}
+.doc-pix-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--g3);margin-bottom:3px;font-weight:700}
+
+/* CONDIÇÕES */
+.doc-cond-item{font-size:.75rem;color:var(--tx2);padding:3px 0;border-bottom:1px solid var(--brd)}
+.doc-cond-item:last-child{border-bottom:none}
+.doc-cond-lbl{font-size:.6rem;color:var(--tx3);margin-bottom:2px}
+
+/* ASSINATURAS */
+.doc-assin-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:4px}
+.doc-assin-block{text-align:center}
+.doc-assin-img-wrap{min-height:50px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:6px;position:relative}
+.doc-assin-img{max-height:50px;max-width:140px;object-fit:contain}
+.doc-assin-linha{border-top:1px solid var(--brd2);margin:0 8px 6px}
+.doc-assin-nome{font-size:.78rem;font-weight:600;color:var(--tx)}
+.doc-assin-cargo{font-size:.65rem;color:var(--tx3)}
+.btn-assin{font-size:.65rem;color:var(--g3);background:none;border:1px solid var(--g2);border-radius:6px;padding:3px 8px;cursor:pointer;font-family:'Outfit',sans-serif;display:block;margin:4px auto 0;white-space:nowrap}
+.btn-assin:hover{background:rgba(22,160,75,.1)}
+
+/* CAMPOS EDITÁVEIS (contenteditable e inputs inline) */
+[contenteditable]{cursor:text}
+[contenteditable]:hover{background:rgba(255,255,255,.04);border-radius:4px}
+[contenteditable]:focus{background:rgba(22,160,75,.06);outline:1.5px solid var(--g1);border-radius:4px;padding:1px 3px}
+.ed-inline{background:none;border:none;border-bottom:1px dashed var(--brd2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:inherit;width:auto;min-width:60px;max-width:100%;transition:border-color .15s}
+.ed-inline:focus{outline:none;border-bottom-color:var(--g1)}
+.ed-inline-block{width:100%;background:var(--bg4);border:1.5px solid var(--brd);border-radius:6px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:.8rem;padding:6px 10px;margin-top:4px;transition:border-color .15s}
+.ed-inline-block:focus{outline:none;border-color:var(--g1)}
+textarea.ed-inline-block{resize:vertical;min-height:56px;line-height:1.5}
+.ed-field-lbl{font-size:.6rem;color:var(--tx3);margin-bottom:3px;display:block}
+
+/* MODAL CANVAS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rad);width:100%;max-width:420px;overflow:hidden}
+.modal-head{padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:1px;color:var(--g3)}
+.modal-head button{background:none;border:none;color:var(--tx3);font-size:1.1rem;cursor:pointer}
+.modal-body{padding:14px}
+#canvas-assin-editor{width:100%;height:150px;background:var(--bg4);border:1.5px solid var(--brd);border-radius:var(--rads);cursor:crosshair;touch-action:none;display:block}
+.modal-actions{display:flex;gap:8px;margin-top:10px}
+.modal-actions button{flex:1;padding:9px;border-radius:var(--rads);font-family:'Outfit',sans-serif;font-size:.8rem;cursor:pointer;border:1.5px solid var(--brd);background:var(--bg4);color:var(--tx2);transition:.15s}
+.modal-actions .btn-ok{background:linear-gradient(135deg,var(--g2),var(--g1));color:#fff;border:none;font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--brd);border-radius:30px;padding:8px 18px;font-size:.8rem;color:var(--tx);opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ERRO */
+#editor-erro{display:none;text-align:center;padding:60px 20px;color:var(--tx2)}
+#editor-erro h2{color:var(--r3);margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-title">Editor de proposta <span>clique em qualquer campo para editar</span></div>
+  <button class="btn-top" onclick="voltarOrcamento()">← Voltar</button>
+  <button class="btn-top" onclick="salvarRascunho()">Salvar rascunho</button>
+  <button class="btn-top primary" onclick="gerarPDFEditor()">⬇ Gerar PDF</button>
+</div>
+
+<!-- ERRO -->
+<div id="editor-erro">
+  <h2>Nenhuma proposta carregada</h2>
+  <p>Gere um orçamento primeiro e clique em "Abrir Editor".</p>
+  <br>
+  <a href="index.html" style="color:var(--g3)">← Ir para orçamentos</a>
+</div>
+
+<!-- CORPO -->
+<div id="editor-corpo" class="page">
+  <div class="split">
+
+    <!-- FERRAMENTAS -->
+    <div class="col-tools">
+      <div class="tools-card">
+        <div class="tools-title">Ferramentas</div>
+        <div class="tools-body">
+          <button class="tool-btn" onclick="uploadLogoInline()">
+            <span class="ti">🖼️</span> Trocar logo
+          </button>
+          <button class="tool-btn" onclick="uploadAssinaturaInline()">
+            <span class="ti">📤</span> Carregar assinatura
+          </button>
+          <button class="tool-btn" onclick="abrirCanvasEditor()">
+            <span class="ti">✍️</span> Desenhar assinatura
+          </button>
+          <hr class="tool-sep">
+          <button class="tool-btn" onclick="adicionarItemEditor()">
+            <span class="ti">➕</span> Nova linha de serviço
+          </button>
+          <hr class="tool-sep">
+          <button class="tool-btn primary" onclick="gerarPDFEditor()" style="background:linear-gradient(135deg,var(--g2),var(--g1));color:#fff;border:none;font-weight:700">
+            <span class="ti">⬇</span> Gerar PDF
+          </button>
+          <hr class="tool-sep">
+          <p class="tool-hint">Clique em qualquer texto na proposta para editar diretamente.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW DA PROPOSTA -->
+    <div class="col-preview">
+      <div class="proposta-card">
+        <div class="proposta-inner">
+
+          <!-- CABEÇALHO -->
+          <div class="doc-header">
+            <div class="doc-logo-wrap">
+              <div>
+                <img id="ed-logo" class="doc-logo" src="" alt="Logo" style="display:none" onclick="uploadLogoInline()" title="Clique para trocar">
+                <button class="doc-logo-btn" onclick="uploadLogoInline()">Trocar logo</button>
+              </div>
+            </div>
+            <div class="doc-info">
+              <div class="doc-nome" id="ed-nome-pf">—</div>
+              <div class="doc-sub" id="ed-doc-pf"></div>
+              <div class="doc-contato-info" id="ed-email-pf"></div>
+              <div class="doc-contato-info" id="ed-tel-pf"></div>
+              <div class="doc-contato-info" id="ed-end-pf"></div>
+            </div>
+          </div>
+
+          <!-- BADGE -->
+          <div class="doc-badge-row">
+            <div class="doc-badge">
+              <span contenteditable="true" id="ed-titulo">PROPOSTA COMERCIAL</span>
+            </div>
+            <div class="doc-num-data">
+              <div class="doc-num">Nº <span contenteditable="true" id="ed-numero"></span></div>
+              <div class="doc-data">Emitida em: <span contenteditable="true" id="ed-data"></span></div>
+            </div>
+          </div>
+
+          <!-- CLIENTE -->
+          <div class="doc-section">
+            <div class="doc-label">Destinatário</div>
+            <div class="doc-cliente-box">
+              <div class="doc-cli-nome" contenteditable="true" id="ed-cliente"></div>
+              <div class="doc-cli-sub">
+                <span contenteditable="true" id="ed-tipo"></span>
+                <span style="color:var(--tx3)"> · </span>
+                <span contenteditable="true" id="ed-contato" style="font-size:.75rem;color:var(--tx2)"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SERVIÇOS -->
+          <div class="doc-section">
+            <div class="doc-label">Serviços</div>
+            <table class="doc-tbl">
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th class="r">Qtd</th>
+                  <th class="r">Unitário</th>
+                  <th class="r">Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="ed-itens-tbody"></tbody>
+            </table>
+          </div>
+
+          <!-- RESUMO FINANCEIRO -->
+          <div class="doc-section">
+            <div class="doc-label">Resumo financeiro</div>
+            <div class="ed-sub-row">
+              <span>Subtotal bruto</span>
+              <span id="ed-r-sub">R$ 0,00</span>
+            </div>
+            <div id="ed-r-ajustes"></div>
+            <div class="doc-total-box">
+              <div class="doc-total-lbl">VALOR TOTAL DA PROPOSTA</div>
+              <div class="doc-total-val"><sup>R$</sup> <span id="ed-r-total">0,00</span></div>
+            </div>
+
+            <!-- PIX -->
+            <div class="doc-pix-box" id="ed-pix-wrap">
+              <div class="doc-pix-lbl">Pagamento</div>
+              <span contenteditable="true" id="ed-pix-texto" style="font-size:.8rem;color:var(--tx2)"></span>
+            </div>
+          </div>
+
+          <!-- OBSERVAÇÕES -->
+          <div class="doc-section">
+            <div class="doc-label">Observações</div>
+            <span class="ed-field-lbl">Deixe em branco para não aparecer no PDF</span>
+            <textarea class="ed-inline-block" id="ed-obs" placeholder="Observações adicionais..."></textarea>
+          </div>
+
+          <!-- CONDIÇÕES GERAIS -->
+          <div class="doc-section">
+            <div class="doc-label">Condições gerais</div>
+            <div style="margin-bottom:8px">
+              <span class="ed-field-lbl">Validade da proposta</span>
+              <input type="text" class="ed-inline-block" id="ed-validade" placeholder="Ex: 30/07/2025">
+            </div>
+            <div style="margin-bottom:8px">
+              <span class="ed-field-lbl">Forma de pagamento</span>
+              <input type="text" class="ed-inline-block" id="ed-cond-pagamento" value="50% na aprovação + 50% na entrega">
+            </div>
+            <div style="margin-bottom:8px">
+              <span class="ed-field-lbl">Revisões</span>
+              <input type="text" class="ed-inline-block" id="ed-cond-revisoes" value="Revisões incluídas conforme briefing aprovado">
+            </div>
+            <div>
+              <span class="ed-field-lbl">Alterações fora do escopo</span>
+              <input type="text" class="ed-inline-block" id="ed-cond-alteracoes" value="Alterações fora do escopo serão orçadas separadamente">
+            </div>
+          </div>
+
+          <!-- ASSINATURAS -->
+          <div class="doc-section">
+            <div class="doc-label">Assinaturas</div>
+            <div class="doc-assin-grid">
+
+              <!-- Assinatura do cliente (esquerda) -->
+              <div class="doc-assin-block">
+                <div class="doc-assin-img-wrap">
+                  <span style="font-size:.65rem;color:var(--tx3)">Espaço para assinatura</span>
+                </div>
+                <div class="doc-assin-linha"></div>
+                <div class="doc-assin-nome">
+                  <input type="text" class="ed-inline-block" id="ed-cli-nome-label" placeholder="Nome do cliente" style="text-align:center;font-size:.78rem">
+                </div>
+                <div class="doc-assin-cargo">
+                  <input type="text" class="ed-inline-block" id="ed-cli-assin-label" value="Assinatura do cliente" style="text-align:center;font-size:.65rem;color:var(--tx3)">
+                </div>
+              </div>
+
+              <!-- Assinatura do prestador (direita) -->
+              <div class="doc-assin-block">
+                <div class="doc-assin-img-wrap" id="ed-assin-wrap">
+                  <img id="ed-assinatura-img" class="doc-assin-img" src="" style="display:none" alt="Assinatura">
+                </div>
+                <div class="doc-assin-linha"></div>
+                <div class="doc-assin-nome" contenteditable="true" id="ed-assin-nome"></div>
+                <div class="doc-assin-cargo" contenteditable="true" id="ed-assin-cargo"></div>
+                <button class="btn-assin" onclick="uploadAssinaturaInline()">Carregar imagem</button>
+                <button class="btn-assin" onclick="abrirCanvasEditor()">Desenhar</button>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /proposta-inner -->
+      </div><!-- /proposta-card -->
+    </div><!-- /col-preview -->
+
+  </div><!-- /split -->
+</div><!-- /editor-corpo -->
+
+<!-- MODAL: Desenhar assinatura -->
+<div class="modal-overlay" id="modal-assin-editor">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span>Desenhar assinatura</span>
+      <button onclick="fecharCanvasEditor()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.72rem;color:var(--tx3);margin-bottom:8px">Use o dedo ou mouse para assinar:</p>
+      <canvas id="canvas-assin-editor" width="390" height="150"></canvas>
+      <div class="modal-actions">
+        <button onclick="limparCanvasEditor()">Limpar</button>
+        <button onclick="fecharCanvasEditor()">Cancelar</button>
+        <button class="btn-ok" onclick="salvarCanvasEditor()">Salvar assinatura</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="ed-toast"></div>
+
+<script src="perfis.js"></script>
+<script src="editor.js"></script>
+<script>
+window.toast = function(msg, cor) {
+  const el = document.getElementById("ed-toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.style.borderColor = cor || "var(--brd)";
+  el.classList.add("on");
+  setTimeout(() => el.classList.remove("on"), 2400);
+};
+carregarEditor();
+</script>
+</body>
+</html>

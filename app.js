@@ -1,7 +1,15 @@
 const HIST_KEY     = "historico_orcamentos_miguel";
 const SERVICOS_KEY = "servicos_miguel";
 const PACOTES_KEY  = "pacotes_miguel";
-const MEU_NUM      = "5563999999999";
+/* MEU_NUM agora vem do perfil ativo — veja perfis.js */
+function getMeuNumero() {
+  if (typeof getPerfilAtivo === "function") {
+    const p = getPerfilAtivo();
+    const wpp = (p?.whatsapp || "").replace(/\D/g, "");
+    if (wpp) return wpp;
+  }
+  return "5563999999999"; /* fallback */
+}
 
 const $ = (id) => document.getElementById(id);
 const fmt = (v) => v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -464,7 +472,10 @@ function enviarWpp() {
   if (!numeroCliente) { toast("Digite o WhatsApp do cliente", "#c0253d"); return; }
   let numeroFinal = numeroCliente;
   if (!numeroFinal.startsWith("55")) numeroFinal = "55" + numeroFinal;
-  let m = "Ola! Segue a proposta de *Miguel Martins*:\n\n";
+  const _pf = (typeof getPerfilAtivo === "function") ? getPerfilAtivo() : null;
+  const _nomePf = _pf ? (_pf.tipo === "pj" ? (_pf.nomeEmpresa || _pf.nome) : _pf.nome) : "Miguel Martins";
+  const _pixPf  = (_pf && _pf.mostrarPix && _pf.pixChave) ? ("\n*PIX (" + _pf.pixTipo + "):* " + _pf.pixChave) : "";
+  let m = "Ola! Segue a proposta de *" + _nomePf + "*:\n\n";
   if (orc.cliente) m += "*Cliente:* " + orc.cliente + "\n";
   m += "*Tipo:* " + orc.tipo + "\n";
   if (orc.contato) m += "*Contato:* " + orc.contato + "\n";
@@ -474,6 +485,7 @@ function enviarWpp() {
   m += "\n*TOTAL: " + RS(orc.total) + "*\n";
   m += "*Validade:* " + valStr + "\n";
   if (orc.obs) m += "\n*Obs:* " + orc.obs + "\n";
+  m += _pixPf;
   window.open("https://wa.me/" + numeroFinal + "?text=" + encodeURIComponent(m), "_blank");
 }
 
@@ -622,15 +634,20 @@ async function gerarPDF() {
 
     const asX = W-mr-58;
     S("#343444"); doc.setLineWidth(0.5); doc.line(asX,y,W-mr,y);
-    C("#eeeef5"); bold(); size(8); doc.text("Miguel Martins", asX+29, y+6, {align:"center"});
+    const _pfPDF = (typeof getPerfilAtivo === "function") ? getPerfilAtivo() : null;
+    const _nomePDF = _pfPDF ? (_pfPDF.tipo === "pj" ? (_pfPDF.nomeEmpresa || _pfPDF.nome) : _pfPDF.nome) : "Miguel Martins";
+    const _endPDF  = (_pfPDF && _pfPDF.mostrarEndereco && _pfPDF.endereco) ? _pfPDF.endereco : "Taipas do Tocantins - TO";
+    const _pixLinha = (_pfPDF && _pfPDF.mostrarPix && _pfPDF.pixChave) ? ("PIX (" + _pfPDF.pixTipo + "): " + _pfPDF.pixChave) : "";
+    C("#eeeef5"); bold(); size(8); doc.text(_nomePDF, asX+29, y+6, {align:"center"});
     C("#9999b0"); bold(false); size(6.5);
     doc.text("Designer Grafico & Videomaker", asX+29, y+11, {align:"center"});
-    doc.text("Taipas do Tocantins - TO", asX+29, y+16, {align:"center"});
+    doc.text(_endPDF, asX+29, y+16, {align:"center"});
 
     F("#0d1a0f"); doc.rect(4,H-12,W-4,12,"F");
     F("#1dd668"); doc.rect(4,H-12,W-4,0.6,"F");
     C("#9999b0"); bold(false); size(6.5);
-    doc.text("Miguel Martins  .  Designer Grafico & Videomaker  .  Taipas do Tocantins - TO", W/2, H-6, {align:"center"});
+    const _rodape = _nomePDF + "  .  Designer Grafico & Videomaker  .  " + _endPDF + (_pixLinha ? "  .  " + _pixLinha : "");
+    doc.text(_rodape, W/2, H-6, {align:"center"});
     C("#5a5a72"); size(6);
     doc.text("Documento gerado em "+orc.data+"  .  "+orc.numero, W/2, H-2, {align:"center"});
 

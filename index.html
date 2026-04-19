@@ -262,11 +262,11 @@ table td{padding:5px 3px;vertical-align:middle}
 
 <header>
   <div id="logo-wrap">
-    <img src="IMG/LOGO.png" alt="LOGO" width="90" height="60">
+    <img id="header-logo" src="IMG/LOGO.png" alt="LOGO" width="90" height="60">
   </div>
   <div class="header-txt">
-    <h1>MIGUEL <em>MARTINS</em></h1>
-    <p class="sub">Designer Gráfico &amp; Videomaker · Taipas do Tocantins</p>
+    <h1 id="header-nome">MIGUEL <em>MARTINS</em></h1>
+    <p class="sub" id="header-sub">Designer Gráfico &amp; Videomaker</p>
   </div>
   <nav class="header-nav">
     <a class="hn-item ativo" href="index.html"><span class="hn-icon">🏠</span> Início</a>
@@ -275,6 +275,11 @@ table td{padding:5px 3px;vertical-align:middle}
     <a class="hn-item" href="admin.html"><span class="hn-icon">⚙️</span> Admin</a>
   </nav>
 </header>
+<div style="padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px">
+  <span style="font-size:.65rem;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;flex-shrink:0">Perfil:</span>
+  <select id="seletor-perfil" onchange="onMudarPerfilAtivo(this.value)" style="flex:1;background:var(--bg4);border:1.5px solid var(--brd);border-radius:8px;color:var(--tx);font-family:Outfit,sans-serif;font-size:.8rem;padding:5px 10px"></select>
+  <a href="perfis.html" style="font-size:.7rem;color:var(--g3);text-decoration:none;flex-shrink:0">Editar ›</a>
+</div>
 
 <div class="page">
 <div class="layout">
@@ -413,7 +418,7 @@ table td{padding:5px 3px;vertical-align:middle}
     <div class="acoes">
       <button class="btn btn-gerar" onclick="gerarProposta()">📄 Gerar proposta</button>
       <button class="btn btn-wpp"   onclick="enviarWpp()">💬 Enviar no WhatsApp</button>
-      <button class="btn btn-pdf"   onclick="gerarPDF()">📄 Gerar PDF</button>
+      <button class="btn btn-pdf"   onclick="abrirEditor()" style="background:linear-gradient(135deg,#0e7a38,#16a04b);color:#fff;font-weight:700">✍️ Editar &amp; PDF</button>
       <button class="btn btn-pdf"   onclick="gerarPNG()">🖼️ Imagem PNG</button>
       <button class="btn btn-pdf"   onclick="location.href='historico.html'">📚 Ver histórico</button>
       <button class="btn btn-limpar" onclick="limpar()">🗑️ Limpar formulário</button>
@@ -445,7 +450,7 @@ table td{padding:5px 3px;vertical-align:middle}
       <div class="side-acoes">
         <button class="side-btn side-btn-gerar" onclick="gerarProposta()">📄 Gerar proposta</button>
         <button class="side-btn side-btn-wpp"   onclick="enviarWpp()">💬 Enviar no WhatsApp</button>
-        <button class="side-btn side-btn-pdf"   onclick="gerarPDF()">📄 Gerar PDF</button>
+        <button class="side-btn side-btn-pdf"   onclick="abrirEditor()" style="background:linear-gradient(135deg,#0e7a38,#16a04b);color:#fff;font-weight:700">✍️ Editar &amp; PDF</button>
         <button class="side-btn side-btn-pdf"   onclick="gerarPNG()">🖼️ Imagem PNG</button>
         <button class="side-btn side-btn-limpar" onclick="limpar()">🗑️ Limpar formulário</button>
       </div>
@@ -504,6 +509,7 @@ table td{padding:5px 3px;vertical-align:middle}
 </div><!-- /page -->
 
 <div id="toast"></div>
+<script src="perfis.js"></script>
 <script src="app.js"></script>
 <script>
 /* Espelha os valores do resumo mobile para a sidebar desktop */
@@ -549,5 +555,44 @@ table td{padding:5px 3px;vertical-align:middle}
   <a class="bn-item" href="admin.html"><span class="bn-icon">⚙️</span><span class="bn-lbl">Admin</span></a>
 </nav>
 
+<script>
+// Abre o editor de proposta com os dados do orçamento atual
+function abrirEditor() {
+  const d = recalc();
+  if (!d.ls.length) { toast("Adicione pelo menos 1 serviço", "#c0253d"); return; }
+  const orc = montarOrcamento();
+  // formata validade legível
+  if (orc.validade) {
+    orc.validadeFormatada = new Date(orc.validade + "T12:00:00").toLocaleDateString("pt-BR");
+  }
+  sessionStorage.setItem("orc_editor_rascunho_v1", JSON.stringify(orc));
+  window.location.href = "editor.html";
+}
+window.abrirEditor = abrirEditor;
+
+// Atualiza header com dados do perfil ativo
+(function initPerfilHeader() {
+  renderSeletorPerfil();
+  const p = getPerfilAtivo();
+  if (!p) return;
+  const nome = p.tipo === "pj" ? (p.nomeEmpresa || p.nome) : p.nome;
+  const partes = nome.trim().split(" ");
+  const primeiroNome = partes[0].toUpperCase();
+  const resto = partes.slice(1).join(" ").toUpperCase();
+  const h1 = document.getElementById("header-nome");
+  if (h1) h1.innerHTML = primeiroNome + (resto ? ` <em>${resto}</em>` : "");
+  const sub = document.getElementById("header-sub");
+  if (sub) {
+    const doc = p.tipo === "pj" && p.cnpj ? ("CNPJ " + p.cnpj) : (p.cpf ? "CPF " + p.cpf : "");
+    sub.textContent = doc || (p.email || "Designer Gráfico & Videomaker");
+  }
+  const logoEl = document.getElementById("header-logo");
+  if (logoEl && p.logo) {
+    logoEl.src = p.logo;
+  } else if (logoEl) {
+    logoEl.src = "IMG/LOGO.png";
+  }
+})();
+</script>
 </body>
 </html>
