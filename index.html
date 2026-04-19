@@ -148,6 +148,46 @@ table td{padding:5px 3px;vertical-align:middle}
   .total-val{font-size:2.1rem}
   .fx .fv{font-size:.95rem}
 }
+/* ======= MENU INFERIOR ======= */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 62px;
+  background: rgba(17,17,22,.97);
+  border-top: 1px solid var(--brd);
+  display: flex;
+  align-items: stretch;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--tx2);
+  transition: color .18s;
+}
+
+.bn-item:hover,
+.bn-item.ativo {
+  color: var(--g3);
+}
+
+.bn-icon { font-size: 1.35rem; line-height: 1; }
+
+.bn-lbl {
+  font-family: 'Outfit', sans-serif;
+  font-size: .62rem;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
 </style>
 <script>
 // Proteção de sessão
@@ -352,5 +392,46 @@ if (localStorage.getItem("miguel_admin_session") !== "on") {
 <div id="toast"></div>
 
 <script src="app.js"></script>
+<nav class="bottom-nav">
+  <a class="bn-item" href="index.html">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-lbl">Início</span>
+  </a>
+  <a class="bn-item" href="historico.html">
+    <span class="bn-icon">📚</span>
+    <span class="bn-lbl">Histórico</span>
+  </a>
+  <a class="bn-item" href="admin.html">
+    <span class="bn-icon">⚙️</span>
+    <span class="bn-lbl">Admin</span>
+  </a>
+</nav>
+<!-- ======= MENU INFERIOR =======
+     Cole isso no final do <body> de cada página, antes do </body>
+     ======================================= -->
+
+<nav class="bottom-nav">
+  <a class="bn-item" href="index.html">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-lbl">Início</span>
+  </a>
+  <a class="bn-item" href="historico.html">
+    <span class="bn-icon">📚</span>
+    <span class="bn-lbl">Histórico</span>
+  </a>
+  <a class="bn-item" href="admin.html">
+    <span class="bn-icon">⚙️</span>
+    <span class="bn-lbl">Admin</span>
+  </a>
+</nav>
+
+<script>
+  document.querySelectorAll('.bn-item').forEach(function(a) {
+    var page = location.pathname.split('/').pop() || 'index.html';
+    if (a.getAttribute('href') === page) {
+      a.classList.add('ativo');
+    }
+  });
+</script>
 </body>
 </html>

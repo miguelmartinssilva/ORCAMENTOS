@@ -46,5 +46,46 @@
   </main>
 
   <script src="admin.js"></script>
+  <nav class="bottom-nav">
+  <a class="bn-item" href="index.html">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-lbl">Início</span>
+  </a>
+  <a class="bn-item" href="historico.html">
+    <span class="bn-icon">📚</span>
+    <span class="bn-lbl">Histórico</span>
+  </a>
+  <a class="bn-item" href="admin.html">
+    <span class="bn-icon">⚙️</span>
+    <span class="bn-lbl">Admin</span>
+  </a>
+</nav>
+<!-- ======= MENU INFERIOR =======
+     Cole isso no final do <body> de cada página, antes do </body>
+     ======================================= -->
+
+<nav class="bottom-nav">
+  <a class="bn-item" href="index.html">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-lbl">Início</span>
+  </a>
+  <a class="bn-item" href="historico.html">
+    <span class="bn-icon">📚</span>
+    <span class="bn-lbl">Histórico</span>
+  </a>
+  <a class="bn-item" href="admin.html">
+    <span class="bn-icon">⚙️</span>
+    <span class="bn-lbl">Admin</span>
+  </a>
+</nav>
+
+<script>
+  document.querySelectorAll('.bn-item').forEach(function(a) {
+    var page = location.pathname.split('/').pop() || 'index.html';
+    if (a.getAttribute('href') === page) {
+      a.classList.add('ativo');
+    }
+  });
+</script>
 </body>
 </html>

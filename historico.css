@@ -154,3 +154,31 @@ body{
     white-space:normal;
   }
 }
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 62px;
+  background: rgba(17,17,22,.97);
+  border-top: 1px solid var(--brd);
+  display: flex;
+  align-items: stretch;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+}
+
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--tx2);
+  transition: color .18s;
+}
+
+.bn-item:hover,
+.bn-item.ativo {
+  color: var(--g3);
+}
