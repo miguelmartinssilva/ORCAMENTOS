@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin | Miguel Martins</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+  <main class="login-wrap">
+    <section class="login-card">
+      <div class="eyebrow">Painel administrativo</div>
+      <h1 class="login-title">Miguel <span>Martins</span></h1>
+      <p class="login-sub">Acesso restrito</p>
+
+      <form id="login-form" class="login-form">
+        <div class="fg">
+          <label class="lbl">Usuário</label>
+          <input type="text" id="user" placeholder="Digite seu usuário">
+        </div>
+
+        <div class="fg">
+          <label class="lbl">Senha</label>
+          <input type="password" id="pass" placeholder="Digite sua senha">
+        </div>
+
+        <div id="login-msg" class="login-msg"></div>
+
+        <button type="submit" class="btn-admin btn-main">Entrar</button>
+      </form>
+
+      <p class="login-hint">Usuário padrão: <strong>admin</strong> · Senha padrão: <strong>1234</strong></p>
+    </section>
+  </main>
+
+  <script src="login.js"></script>
+</body>
+</html>

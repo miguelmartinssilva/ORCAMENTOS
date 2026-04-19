@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico de Orçamentos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="historico.css">
+</head>
+<script>
+// Proteção de sessão
+if (localStorage.getItem("miguel_admin_session") !== "on") {
+  window.location.href = "login.html";
+}
+</script>
+<body>
+  <header class="hist-header">
+    <h1>HISTÓRICO <em>DE ORÇAMENTOS</em></h1>
+    <p>Propostas já geradas</p>
+  </header>
+
+  <main class="hist-wrap">
+    <div class="hist-top">
+      <a class="btn-back" href="index.html">← Voltar</a>
+      <button class="btn-clear" onclick="limparHistorico()">Limpar tudo</button>
+    </div>
+
+    <div id="hist-list"></div>
+  </main>
+
+  <script src="historico.js"></script>
+</body>
+</html>

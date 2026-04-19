@@ -19,8 +19,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:80px}
-
-/* ======= HEADER ======= */
 header{
   background:linear-gradient(135deg,#0b2318 0%,#0d1a26 50%,#1a0b14 100%);
   padding:24px 18px 20px;text-align:center;
@@ -36,17 +34,11 @@ header::after{content:'';position:absolute;inset:0;background:radial-gradient(el
 header h1{font-family:'Syne',sans-serif;font-size:2.1rem;font-weight:800;letter-spacing:2px;position:relative;line-height:1}
 header h1 em{font-style:normal;color:var(--g3);text-shadow:0 0 24px rgba(29,214,104,.5)}
 header p.sub{font-size:.7rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-top:5px;position:relative}
-
-/* ======= LAYOUT ======= */
 .wrap{max-width:560px;margin:0 auto;padding:0 13px}
-
-/* ======= CARD ======= */
 .card{margin-top:15px;background:var(--bg2);border:1px solid var(--brd);border-radius:var(--rad);overflow:hidden;animation:up .35s ease both}
 @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .ch{display:flex;align-items:center;gap:9px;padding:12px 15px;background:var(--bg3);border-bottom:1px solid var(--brd);font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g3)}
 .cb{padding:13px 14px}
-
-/* ======= INPUTS ======= */
 .fg{margin-bottom:13px}
 .fg:last-child{margin-bottom:0}
 .lbl{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--tx2);margin-bottom:6px;font-weight:500}
@@ -61,15 +53,11 @@ input::placeholder,textarea::placeholder{color:var(--tx3)}
 textarea{resize:vertical;min-height:68px;line-height:1.5}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239999b0' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;cursor:pointer}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-/* ======= PILLS ======= */
 .pills{display:flex;flex-wrap:wrap;gap:7px}
 .pills label{flex:1;min-width:80px}
 .pills input{display:none}
 .pills span{display:block;text-align:center;padding:10px 6px;border-radius:var(--rads);border:1.5px solid var(--brd);background:var(--bg4);font-size:.79rem;font-weight:500;color:var(--tx2);cursor:pointer;transition:all .18s;line-height:1.3}
 .pills input:checked+span{border-color:var(--g1);background:rgba(22,160,75,.18);color:var(--g3)}
-
-/* ======= TABELA SERVIÇOS ======= */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:.87rem}
 table thead th{padding:7px 5px;text-align:left;font-size:.66rem;text-transform:uppercase;letter-spacing:1px;color:var(--tx3);font-weight:600;border-bottom:1px solid var(--brd);white-space:nowrap}
@@ -78,7 +66,7 @@ table td{padding:5px 3px;vertical-align:middle}
 .td-d input{width:100%;min-width:130px;background:var(--bg4);border:1.5px solid var(--brd);border-radius:7px;padding:8px 9px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:.84rem}
 .td-d input:focus{outline:none;border-color:var(--g1)}
 .td-q,.td-u{width:60px}
-.td-q input,.td-u input{width:100%;background:var(--bg4);border:1.5px solid var(--brd);border-radius:7px;padding:8px 4px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:.84rem;text-align:center;-moz-appearance:textfield}
+.td-q input,.td-u input{width:100%;background:var(--bg4);border:1.5px solid var(--brd);border-radius:7px;padding:8px 4px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:.84rem;text-align:center;appearance:textfield;-moz-appearance:textfield}
 .td-q input::-webkit-outer-spin-button,.td-q input::-webkit-inner-spin-button,.td-u input::-webkit-outer-spin-button,.td-u input::-webkit-inner-spin-button{display:none}
 .td-q input:focus,.td-u input:focus{outline:none;border-color:var(--g1)}
 .td-s{text-align:right;font-weight:600;color:var(--g3);white-space:nowrap;padding-right:2px;min-width:70px;font-size:.85rem}
@@ -87,8 +75,6 @@ table td{padding:5px 3px;vertical-align:middle}
 .btn-del:hover{color:var(--r3)}
 #btn-add{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:11px;background:rgba(22,160,75,.1);border:1.5px dashed var(--g2);color:var(--g3);font-family:'Outfit',sans-serif;font-size:.84rem;font-weight:500;padding:10px;border-radius:var(--rads);cursor:pointer;transition:.18s;width:100%}
 #btn-add:hover{background:rgba(22,160,75,.2)}
-
-/* ======= RESUMO ======= */
 .rl{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--brd);font-size:.87rem}
 .rl:last-child{border:none}
 .rl .k{color:var(--tx2)}
@@ -106,8 +92,6 @@ table td{padding:5px 3px;vertical-align:middle}
 .fx.ideal .fl{color:var(--g3)}
 .fx .fv{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--tx)}
 .fx.ideal .fv{color:var(--g3)}
-
-/* ======= BOTÕES ======= */
 .acoes{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:17px}
 .btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:15px 10px;border:none;border-radius:var(--rads);font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.6px;cursor:pointer;transition:all .2s;text-align:center}
 .btn:active{transform:scale(.97)}
@@ -115,8 +99,6 @@ table td{padding:5px 3px;vertical-align:middle}
 .btn-wpp{background:linear-gradient(135deg,#1da851,#128c3b);color:#fff;box-shadow:0 4px 16px rgba(29,168,81,.3)}
 .btn-pdf{background:var(--bg3);border:1.5px solid var(--brd);color:var(--tx2)}
 .btn-limpar{background:var(--bg3);border:1.5px solid var(--brd);color:var(--tx3);grid-column:1/-1;font-size:.82rem;padding:10px}
-
-/* ======= PROPOSTA ======= */
 #proposta-wrap{display:none;margin-top:19px;animation:up .4s ease both}
 #proposta-wrap.on{display:block}
 .pc{background:var(--bg2);border:1px solid var(--g1);border-radius:var(--rad);overflow:hidden;box-shadow:0 0 40px rgba(22,160,75,.13)}
@@ -158,26 +140,27 @@ table td{padding:5px 3px;vertical-align:middle}
 .linha-a{width:160px;border-top:1.5px solid var(--brd2);margin-bottom:5px}
 .as-n{font-size:.77rem;font-weight:600;color:var(--tx)}
 .as-c{font-size:.67rem;color:var(--tx3)}
-
-/* ======= TOAST ======= */
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--g1);color:#fff;padding:10px 20px;border-radius:30px;font-size:.81rem;font-weight:600;transition:transform .28s ease;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
 #toast.on{transform:translateX(-50%) translateY(0)}
-
-/* ======= MOBILE ======= */
 @media(max-width:380px){
   header h1{font-size:1.8rem}
   .total-val{font-size:2.1rem}
   .fx .fv{font-size:.95rem}
 }
 </style>
+<script>
+// Proteção de sessão
+if (localStorage.getItem("miguel_admin_session") !== "on") {
+  window.location.href = "login.html";
+}
+</script>
 </head>
 <body>
 
+
 <header>
   <div id="logo-wrap">
-    <img id="logo-preview" src="" alt="logo"/>
-    <button id="btn-logo" onclick="document.getElementById('inp-logo').click()">📷 Inserir logo</button>
-    <input type="file" id="inp-logo" accept="image/*"/>
+    <img src="IMG/LOGO.png" alt="LOGO" width="200" height="200">
   </div>
   <h1>MIGUEL <em>MARTINS</em></h1>
   <p class="sub">Designer Gráfico &amp; Videomaker · Taipas do Tocantins</p>
@@ -185,7 +168,6 @@ table td{padding:5px 3px;vertical-align:middle}
 
 <div class="wrap">
 
-<!-- DADOS DO CLIENTE -->
 <div class="card" style="animation-delay:.04s">
   <div class="ch"><span>👤</span> DADOS DO CLIENTE</div>
   <div class="cb">
@@ -216,7 +198,6 @@ table td{padding:5px 3px;vertical-align:middle}
   </div>
 </div>
 
-<!-- SERVIÇOS -->
 <div class="card" style="animation-delay:.08s">
   <div class="ch"><span>📦</span> SERVIÇOS</div>
   <div class="cb">
@@ -238,14 +219,13 @@ table td{padding:5px 3px;vertical-align:middle}
   </div>
 </div>
 
-<!-- AJUSTES -->
 <div class="card" style="animation-delay:.12s">
   <div class="ch"><span>⚙️</span> AJUSTES</div>
   <div class="cb">
     <div class="fg">
       <label class="lbl">Tipo de cliente — Aplicado automaticamente</label>
       <div style="font-size:.83rem;color:var(--tx2);padding:9px 12px;background:var(--bg4);border:1.5px solid var(--brd);border-radius:var(--rads)">
-        <span id="res-tipo-label">Comércio (padrão)</span> &nbsp;·&nbsp; <span id="res-tipo-fator" style="color:var(--g3);font-weight:600">×1.00</span>
+        <span id="res-tipo-label">Comércio (padrão)</span> · <span id="res-tipo-fator" style="color:var(--g3);font-weight:600">×1.00</span>
       </div>
     </div>
     <div class="fg">
@@ -285,7 +265,6 @@ table td{padding:5px 3px;vertical-align:middle}
   </div>
 </div>
 
-<!-- RESUMO -->
 <div class="card" style="animation-delay:.16s">
   <div class="ch"><span>💰</span> RESUMO</div>
   <div class="cb">
@@ -307,18 +286,14 @@ table td{padding:5px 3px;vertical-align:middle}
   </div>
 </div>
 
-<!-- BOTÕES -->
 <div class="acoes">
   <button class="btn btn-gerar" onclick="gerarProposta()">📄 Gerar proposta</button>
-  <button class="btn btn-wpp" onclick="enviarWpp()">
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.556 4.112 1.528 5.838L.057 23.547a.5.5 0 00.605.605l5.709-1.471A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.92 0-3.72-.513-5.27-1.404l-.378-.222-3.926 1.012 1.012-3.926-.222-.378A9.961 9.961 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-    Enviar no WhatsApp
-  </button>
+  <button class="btn btn-wpp" onclick="enviarWpp()">💬 Enviar no WhatsApp</button>
   <button class="btn btn-pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
+  <button class="btn btn-pdf" onclick="location.href='historico.html'">📚 Ver histórico</button>
   <button class="btn btn-limpar" onclick="limpar()">🗑️ Limpar formulário</button>
 </div>
 
-<!-- PROPOSTA GERADA -->
 <div id="proposta-wrap">
   <div class="pc" id="proposta-el">
     <div class="ph">
@@ -371,373 +346,9 @@ table td{padding:5px 3px;vertical-align:middle}
   </div>
 </div>
 
-</div><!-- /wrap -->
+</div>
 <div id="toast"></div>
 
-<script>
-/* ════════════════════════════════
-   ⚙️ CONFIGURAÇÃO — EDITE AQUI
-════════════════════════════════ */
-const MEU_NUM = '5563999999999'; // SEU número: DDI 55 + DDD + número, sem espaços
-
-/* ════════════════════════════════
-   HELPERS
-════════════════════════════════ */
-const $  = id => document.getElementById(id);
-const fmt = v => v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-const R$  = v => `R$ ${fmt(v)}`;
-
-function toast(msg, cor = '#16a04b') {
-  const t = $('toast');
-  t.textContent = msg; t.style.background = cor;
-  t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 2700);
-}
-
-/* Validade padrão: hoje + 7 dias */
-(()=>{const d=new Date();d.setDate(d.getDate()+7);$('cli-validade').value=d.toISOString().split('T')[0]})();
-
-/* ════════════════════════════════
-   TABELA DE SERVIÇOS
-════════════════════════════════ */
-let lid = 0;
-
-function addRow(desc='', qtd=1, unit=200) {
-  const tb = $('tbody');
-  const id = ++lid;
-  const tr = document.createElement('tr');
-  tr.id = `r${id}`;
-  tr.innerHTML = `
-    <td class="td-d"><input type="text" placeholder="Descrição do serviço" value="${desc}" oninput="recalc()"/></td>
-    <td class="td-q"><input type="number" min="1" value="${qtd}" oninput="recalc()"/></td>
-    <td class="td-u"><input type="number" min="0" step="0.01" value="${unit}" oninput="recalc()"/></td>
-    <td class="td-s" id="s${id}">${R$(qtd*unit)}</td>
-    <td class="td-x"><button class="btn-del" onclick="delRow(${id})">×</button></td>
-  `;
-  tb.appendChild(tr);
-  recalc();
-}
-
-function delRow(id) {
-  const el = $(`r${id}`); if(el) el.remove();
-  recalc();
-}
-
-/* ════════════════════════════════
-   COLETAR + RECALCULAR
-════════════════════════════════ */
-function getLinhas() {
-  return [...$('tbody').querySelectorAll('tr')].map(tr => {
-    const ins = tr.querySelectorAll('input');
-    const desc = ins[0]?.value.trim() || '';
-    const qtd  = parseFloat(ins[1]?.value) || 0;
-    const unit = parseFloat(ins[2]?.value) || 0;
-    const sub  = qtd * unit;
-    const sid  = tr.id.slice(1);
-    const sel  = $(`s${sid}`);
-    if(sel) sel.textContent = R$(sub);
-    return {desc, qtd, unit, sub};
-  }).filter(l => l.desc && l.qtd > 0);
-}
-
-function recalc() {
-  const ls     = getLinhas();
-  const sub    = ls.reduce((a,l)=>a+l.sub, 0);
-  const tipo   = parseFloat($('cli-tipo').value) || 1;
-  const cx     = parseFloat(document.querySelector('input[name=cx]:checked')?.value) || 1;
-  const urg    = parseFloat(document.querySelector('input[name=urg]:checked')?.value) || 1;
-  const freq   = parseFloat(document.querySelector('input[name=freq]:checked')?.value) || 1;
-  const descPct= parseFloat($('desc')?.value) || 0;
-  const dFat   = 1 - descPct/100;
-  const total  = Math.round(sub * tipo * cx * urg * freq * dFat * 100)/100;
-
-  /* atualiza tipo-label no painel ajustes */
-  const tipoLbl = $('cli-tipo').options[$('cli-tipo').selectedIndex]?.text || '';
-  $('res-tipo-label').textContent = tipoLbl;
-  $('res-tipo-fator').textContent = `×${tipo.toFixed(2)}`;
-
-  /* resumo */
-  $('r-sub').textContent   = R$(sub);
-  $('r-tipo').textContent  = `×${tipo.toFixed(2)}`;
-  $('r-cx').textContent    = `×${cx.toFixed(2)}`;
-  $('r-urg').textContent   = urg  !== 1 ? `×${urg.toFixed(2)}`  : '—';
-  $('r-freq').textContent  = freq !== 1 ? `×${freq.toFixed(2)}` : '—';
-  $('r-desc').textContent  = descPct > 0 ? `−${descPct}%` : '—';
-  $('r-total').innerHTML   = `<sup>R$</sup> ${fmt(total)}`;
-
-  /* faixas */
-  $('f-eco').textContent   = `R$ ${Math.round(total*.85).toLocaleString('pt-BR')}`;
-  $('f-ideal').textContent = `R$ ${Math.round(total).toLocaleString('pt-BR')}`;
-  $('f-prem').textContent  = `R$ ${Math.round(total*1.25).toLocaleString('pt-BR')}`;
-
-  return {ls, sub, tipo, cx, urg, freq, descPct, dFat, total};
-}
-
-/* ════════════════════════════════
-   GERAR PROPOSTA VISUAL
-════════════════════════════════ */
-function gerarProposta() {
-  const d = recalc();
-  if(!d.ls.length){ toast('⚠️ Adicione pelo menos 1 serviço','#c0253d'); return; }
-
-  const now = new Date();
-  const num = `MM-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
-  $('p-num').textContent  = `#${num}`;
-  $('p-data').textContent = now.toLocaleDateString('pt-BR');
-
-  /* cliente */
-  const nome   = $('cli-nome').value.trim() || '(cliente não informado)';
-  const tLbl   = $('cli-tipo').options[$('cli-tipo').selectedIndex].text;
-  const cont   = $('cli-contato').value.trim();
-  $('p-cli-nome').textContent = nome;
-  $('p-cli-sub').textContent  = `${tLbl}${cont?' · '+cont:''}`;
-
-  /* itens */
-  $('p-itens').innerHTML = d.ls.map(l=>`
-    <tr>
-      <td class="in">${l.desc}</td>
-      <td class="iq">${l.qtd}×</td>
-      <td class="iu">${R$(l.unit)}</td>
-      <td class="sv">${R$(l.sub)}</td>
-    </tr>
-  `).join('');
-
-  /* ajustes */
-  const tipoLbl2 = $('cli-tipo').options[$('cli-tipo').selectedIndex].text;
-  const freqLbl  = document.querySelector('input[name=freq]:checked')?.closest('label').querySelector('span').textContent || '';
-  const urgLbl   = document.querySelector('input[name=urg]:checked')?.closest('label').querySelector('span').textContent || '';
-  const cxLbl    = document.querySelector('input[name=cx]:checked')?.closest('label').querySelector('span').textContent || '';
-
-  const pct = x => `${x>1?'+':''}${Math.round((x-1)*100)}%`;
-
-  let adjH = `<div class="padj-l"><span class="pk">Subtotal bruto</span><span class="pv">${R$(d.sub)}</span></div>`;
-  if(d.tipo!==1) adjH += `<div class="padj-l"><span class="pk">Tipo cliente (${tipoLbl2})</span><span class="pv ${d.tipo>1?'r':'g'}">${pct(d.tipo)}</span></div>`;
-  if(d.cx!==1)   adjH += `<div class="padj-l"><span class="pk">Complexidade (${cxLbl})</span><span class="pv ${d.cx>1?'r':'g'}">${pct(d.cx)}</span></div>`;
-  if(d.urg!==1)  adjH += `<div class="padj-l"><span class="pk">Urgência (${urgLbl})</span><span class="pv r">${pct(d.urg)}</span></div>`;
-  if(d.freq!==1) adjH += `<div class="padj-l"><span class="pk">Frequência (${freqLbl})</span><span class="pv g">${pct(d.freq)}</span></div>`;
-  if(d.descPct>0)adjH += `<div class="padj-l"><span class="pk">Desconto manual</span><span class="pv g">−${d.descPct}%</span></div>`;
-  $('p-adj').innerHTML = adjH;
-
-  /* total */
-  $('p-total').innerHTML = `<sup>R$</sup> ${fmt(d.total)}`;
-
-  /* obs */
-  const obs = $('obs').value.trim();
-  if(obs){$('p-obs').textContent=obs;$('p-obs-w').style.display='block';}
-  else    $('p-obs-w').style.display='none';
-
-  /* validade */
-  const val = $('cli-validade').value;
-  $('p-val').textContent = val ? new Date(val+'T12:00:00').toLocaleDateString('pt-BR') : '(não definida)';
-
-  $('proposta-wrap').classList.add('on');
-  setTimeout(()=>$('proposta-wrap').scrollIntoView({behavior:'smooth',block:'start'}),120);
-  toast('✅ Proposta gerada com sucesso!');
-}
-
-/* ════════════════════════════════
-   WHATSAPP
-════════════════════════════════ */
-function enviarWpp() {
-  const d = recalc();
-  if(!d.ls.length){ toast('⚠️ Adicione pelo menos 1 serviço','#c0253d'); return; }
-
-  const nome   = $('cli-nome').value.trim();
-  const cont   = $('cli-contato').value.trim();
-  const tLbl   = $('cli-tipo').options[$('cli-tipo').selectedIndex].text;
-  const freqLbl= document.querySelector('input[name=freq]:checked')?.closest('label').querySelector('span').textContent||'';
-  const urgLbl = document.querySelector('input[name=urg]:checked')?.closest('label').querySelector('span').textContent||'';
-  const obs    = $('obs').value.trim();
-  const val    = $('cli-validade').value;
-  const valStr = val ? new Date(val+'T12:00:00').toLocaleDateString('pt-BR') : '7 dias';
-  const hoje   = new Date().toLocaleDateString('pt-BR');
-
-  let m = `Olá! 👋 Segue a proposta de *Miguel Martins*:\n\n`;
-  if(nome) m += `👤 *Cliente:* ${nome}\n`;
-  m += `📋 *Tipo:* ${tLbl}\n`;
-  if(cont) m += `📱 *Contato:* ${cont}\n`;
-  m += `📅 *Data:* ${hoje}\n\n`;
-  m += `━━━━━━━━━━━━━━━━\n📦 *SERVIÇOS*\n━━━━━━━━━━━━━━━━\n`;
-  d.ls.forEach(l => m += `▸ ${l.desc}\n  ${l.qtd}× ${R$(l.unit)} = *${R$(l.sub)}*\n`);
-  m += `\n⚙️ *AJUSTES*\n▸ Frequência: ${freqLbl}\n▸ Urgência: ${urgLbl}\n`;
-  if(d.descPct>0) m += `▸ Desconto: −${d.descPct}%\n`;
-  m += `\n━━━━━━━━━━━━━━━━\n💰 *TOTAL: ${R$(d.total)}*\n━━━━━━━━━━━━━━━━\n\n`;
-  if(obs) m += `📝 *Obs:* ${obs}\n\n`;
-  m += `📌 *Condições:*\n• Validade: ${valStr}\n• Pagamento: 50% aprovação + 50% entrega\n• Revisões conforme briefing aprovado\n\n`;
-  m += `Qualquer dúvida estou à disposição! 😊\n_Miguel Martins · Designer Gráfico & Videomaker_`;
-
-  window.open(`https://wa.me/${MEU_NUM}?text=${encodeURIComponent(m)}`, '_blank');
-}
-
-/* ════════════════════════════════
-   PDF
-════════════════════════════════ */
-async function gerarPDF() {
-  const d = recalc();
-  if(!d.ls.length){ toast('⚠️ Adicione pelo menos 1 serviço','#c0253d'); return; }
-  toast('⏳ Gerando PDF…','#1a4a7a');
-
-  try{
-    const {jsPDF} = window.jspdf;
-    const doc = new jsPDF({unit:'mm',format:'a4'});
-    const W=210, mg=18; let y=0;
-
-    /* fundo header */
-    doc.setFillColor(14,82,51); doc.rect(0,0,W,36,'F');
-    doc.setFillColor(155,28,53); doc.rect(W-52,0,52,36,'F');
-
-    /* título */
-    doc.setTextColor(255,255,255);
-    doc.setFont('helvetica','bold'); doc.setFontSize(19);
-    doc.text('MIGUEL MARTINS', mg, 14);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8);
-    doc.setTextColor(160,220,185);
-    doc.text('Designer Gráfico & Videomaker · Taipas do Tocantins – TO', mg, 20);
-
-    /* proposta header direita */
-    doc.setTextColor(255,255,255);
-    doc.setFont('helvetica','bold'); doc.setFontSize(9);
-    doc.text('PROPOSTA COMERCIAL', W-mg, 12, {align:'right'});
-    doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
-    doc.setTextColor(210,210,225);
-    const now=new Date();
-    doc.text(now.toLocaleDateString('pt-BR'), W-mg, 18, {align:'right'});
-    const val=$('cli-validade').value;
-    if(val) doc.text(`Válida até ${new Date(val+'T12:00:00').toLocaleDateString('pt-BR')}`, W-mg, 23, {align:'right'});
-
-    y=46;
-
-    /* cliente */
-    const nomeC=$('cli-nome').value.trim()||'—';
-    const tLbl=$('cli-tipo').options[$('cli-tipo').selectedIndex].text;
-    const contC=$('cli-contato').value.trim();
-    doc.setFillColor(237,248,242); doc.roundedRect(mg,y-5,W-mg*2,19,3,3,'F');
-    doc.setTextColor(14,60,35); doc.setFont('helvetica','bold'); doc.setFontSize(12);
-    doc.text(nomeC, mg+4, y+3);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,115,100);
-    doc.text(`${tLbl}${contC?' · '+contC:''}`, mg+4, y+9);
-    y+=25;
-
-    /* tabela serviços - header */
-    doc.setFillColor(14,82,51); doc.rect(mg,y,W-mg*2,8,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text('SERVIÇO', mg+3, y+5.5);
-    doc.text('QTD', 131, y+5.5,{align:'right'});
-    doc.text('UNIT.', 156, y+5.5,{align:'right'});
-    doc.text('TOTAL', W-mg-2, y+5.5,{align:'right'});
-    y+=9;
-
-    doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
-    d.ls.forEach((l,i)=>{
-      if(i%2===0){doc.setFillColor(246,251,248);doc.rect(mg,y,W-mg*2,8,'F');}
-      doc.setTextColor(25,25,45);
-      doc.text(l.desc.substring(0,44), mg+3, y+5.5);
-      doc.text(String(l.qtd), 131, y+5.5,{align:'right'});
-      doc.text(R$(l.unit), 156, y+5.5,{align:'right'});
-      doc.setFont('helvetica','bold');
-      doc.text(R$(l.sub), W-mg-2, y+5.5,{align:'right'});
-      doc.setFont('helvetica','normal');
-      y+=8;
-    });
-    y+=5;
-
-    /* ajustes */
-    const pct=x=>`${x>1?'+':''}${Math.round((x-1)*100)}%`;
-    const tipoLbl2=$('cli-tipo').options[$('cli-tipo').selectedIndex].text;
-    const adjs=[];
-    if(d.tipo!==1) adjs.push([`Tipo cliente (${tipoLbl2})`, pct(d.tipo)]);
-    if(d.cx!==1)   adjs.push([`Complexidade`, pct(d.cx)]);
-    if(d.urg!==1)  adjs.push([`Urgência`, pct(d.urg)]);
-    if(d.freq!==1) adjs.push([`Frequência`, pct(d.freq)]);
-    if(d.descPct>0)adjs.push([`Desconto manual`, `−${d.descPct}%`]);
-    if(adjs.length){
-      doc.setFontSize(8); doc.setTextColor(90,90,110);
-      adjs.forEach(([k,v])=>{ doc.text(k,mg+3,y);doc.text(v,W-mg-2,y,{align:'right'});y+=6; });
-      y+=3;
-    }
-
-    /* total box */
-    doc.setFillColor(14,82,51); doc.roundedRect(mg,y,W-mg*2,17,4,4,'F');
-    doc.setFillColor(155,28,53); doc.roundedRect(W-mg-58,y,58,17,4,4,'F');
-    doc.setTextColor(180,230,200); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-    doc.text('VALOR TOTAL DA PROPOSTA', mg+4, y+7);
-    doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(255,255,255);
-    doc.text(R$(d.total), W-mg-3, y+12,{align:'right'});
-    y+=24;
-
-    /* obs */
-    const obs=$('obs').value.trim();
-    if(obs){
-      doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(14,82,51);
-      doc.text('OBSERVAÇÕES:', mg, y);
-      doc.setFont('helvetica','normal');doc.setTextColor(60,60,80);
-      const lines=doc.splitTextToSize(obs, W-mg*2);
-      doc.text(lines, mg, y+5); y+=5+lines.length*5+4;
-    }
-
-    /* condições */
-    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(14,82,51);
-    doc.text('CONDIÇÕES:', mg, y);
-    doc.setFont('helvetica','normal');doc.setTextColor(80,80,100);
-    const cond='Pagamento: 50% na aprovação + 50% na entrega. Revisões conforme briefing aprovado. Alterações fora do escopo serão orçadas separadamente.';
-    const cl=doc.splitTextToSize(cond, W-mg*2);
-    doc.text(cl, mg, y+5); y+=5+cl.length*5+12;
-
-    /* assinatura */
-    doc.setDrawColor(180,180,200);
-    doc.line(W-mg-62,y,W-mg,y);
-    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(30,30,50);
-    doc.text('Miguel Martins', W-mg-31, y+5,{align:'center'});
-    doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);
-    doc.text('Designer Gráfico & Videomaker', W-mg-31, y+9,{align:'center'});
-
-    /* rodapé */
-    doc.setFontSize(7);doc.setTextColor(160,160,180);
-    doc.text('Miguel Martins · Designer Gráfico & Videomaker · Taipas do Tocantins – TO', W/2, 290,{align:'center'});
-
-    const arq=`proposta-${($('cli-nome').value.trim()||'cliente').replace(/\s+/g,'-').toLowerCase()}-${now.getDate()}${now.getMonth()+1}${now.getFullYear()}.pdf`;
-    doc.save(arq);
-    toast('✅ PDF baixado com sucesso!');
-  }catch(e){
-    console.error(e);
-    toast('❌ Erro ao gerar PDF','#c0253d');
-  }
-}
-
-/* ════════════════════════════════
-   LIMPAR
-════════════════════════════════ */
-function limpar(){
-  $('cli-nome').value='';$('cli-contato').value='';$('obs').value='';$('desc').value='';
-  $('cli-tipo').value='1.00';
-  const d=new Date();d.setDate(d.getDate()+7);$('cli-validade').value=d.toISOString().split('T')[0];
-  ['freq','urg','cx'].forEach(n=>{ const el=document.querySelector(`input[name=${n}][value="1.00"]`)||document.querySelector(`input[name=${n}]`); if(el)el.checked=true; });
-  document.querySelector('input[name=cx][value="1.00"]').checked=true;
-  $('tbody').innerHTML=''; lid=0;
-  $('proposta-wrap').classList.remove('on');
-  recalc();
-  window.scrollTo({top:0,behavior:'smooth'});
-  toast('🗑️ Formulário limpo!','#5a5a72');
-}
-
-/* ════════════════════════════════
-   LOGO
-════════════════════════════════ */
-$('inp-logo').addEventListener('change',function(){
-  const f=this.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    const img=$('logo-preview');
-    img.src=e.target.result;img.classList.add('on');
-    $('btn-logo').textContent='✏️ Trocar logo';
-  };
-  r.readAsDataURL(f);
-});
-
-/* ════════════════════════════════
-   INICIAR
-════════════════════════════════ */
-addRow('', 1, 200);
-</script>
+<script src="app.js"></script>
 </body>
 </html>
