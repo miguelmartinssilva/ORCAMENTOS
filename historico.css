@@ -208,3 +208,156 @@ body{
     grid-template-columns: repeat(3, 1fr);
   }
 }
+/* ════════════════════════════════════════════════
+   FASE 4 — ADIÇÕES AO HISTORICO.CSS
+   ════════════════════════════════════════════════ */
+
+/* ── DASHBOARD ── */
+.dash-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+.dash-card{
+  background:var(--bg2);
+  border:1px solid var(--brd);
+  border-radius:var(--rad);
+  padding:14px 16px;
+  text-align:center;
+}
+.dash-val{
+  font-family:'Syne',sans-serif;
+  font-size:1.35rem;
+  font-weight:800;
+  color:var(--tx);
+  line-height:1.1;
+  word-break:break-word;
+}
+.dash-val.dash-green  { color:var(--g3); }
+.dash-val.dash-yellow { color:#ffb400; }
+.dash-lbl{
+  font-size:.63rem;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  color:var(--tx3);
+  margin-top:5px;
+}
+@media(min-width:600px){
+  .dash-grid{ grid-template-columns:repeat(4,1fr); }
+}
+
+/* ── TOOLBAR ── */
+.hist-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:12px;
+}
+.hist-busca{
+  flex:1;min-width:160px;
+  padding:10px 13px;
+  background:var(--bg4);
+  border:1.5px solid var(--brd);
+  border-radius:var(--rads);
+  color:var(--tx);
+  font-family:'Outfit',sans-serif;
+  font-size:.88rem;
+}
+.hist-busca:focus{ outline:none; border-color:var(--g1); }
+.hist-busca::placeholder{ color:var(--tx3); }
+.hist-sel{
+  padding:10px 28px 10px 12px;
+  background:var(--bg4);
+  border:1.5px solid var(--brd);
+  border-radius:var(--rads);
+  color:var(--tx);
+  font-family:'Outfit',sans-serif;
+  font-size:.84rem;
+  cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239999b0' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 9px center;
+  appearance:none;
+}
+.hist-sel:focus{ outline:none; border-color:var(--g1); }
+
+/* ── PILLS STATUS ── */
+.pills-status{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-bottom:16px;
+}
+.pill-status{
+  padding:6px 13px;
+  border-radius:20px;
+  border:1.5px solid var(--brd);
+  background:var(--bg4);
+  color:var(--tx2);
+  font-family:'Outfit',sans-serif;
+  font-size:.78rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .18s;
+}
+.pill-status span{
+  display:inline-block;
+  background:var(--bg3);
+  color:var(--tx3);
+  font-size:.68rem;
+  padding:1px 6px;
+  border-radius:10px;
+  margin-left:4px;
+}
+.pill-status:hover{ border-color:var(--g1); color:var(--g3); }
+.pill-status.ativo{
+  border-color:var(--g1);
+  background:rgba(22,160,75,.12);
+  color:var(--g3);
+}
+.pill-status.ativo span{ background:rgba(22,160,75,.2); color:var(--g3); }
+
+/* ── STATUS SELECT NO CARD ── */
+.hist-head{ align-items:flex-start; }
+.hist-head-info{ flex:1; }
+.hist-head-right{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px;
+  flex-shrink:0;
+}
+.status-sel{
+  font-family:'Outfit',sans-serif;
+  font-size:.72rem;
+  font-weight:700;
+  padding:4px 22px 4px 8px;
+  border-radius:20px;
+  border:1.5px solid;
+  cursor:pointer;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239999b0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 7px center;
+  transition:all .18s;
+}
+.status-sel:focus{ outline:none; }
+
+/* ── BOTÃO EDITOR NO CARD ── */
+.btn-editor{
+  background:rgba(22,160,75,.12);
+  color:var(--g3);
+  border:1px solid rgba(29,214,104,.25) !important;
+}
+.btn-editor:hover{ background:rgba(22,160,75,.25); }
+
+/* ── CARD COM COR DE STATUS ── */
+.hist-card{
+  border-top:3px solid var(--st-cor, var(--brd));
+}
+
+@media(max-width:640px){
+  .hist-head{ flex-direction:column; gap:10px; }
+  .hist-head-right{ flex-direction:row; align-items:center; width:100%; justify-content:space-between; }
+}

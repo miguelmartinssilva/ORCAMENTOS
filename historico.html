@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="historico.css">
 </head>
 <script>
-// Proteção de sessão
 if (localStorage.getItem("miguel_admin_session") !== "on") {
   window.location.href = "login.html";
 }
@@ -20,27 +19,62 @@ if (localStorage.getItem("miguel_admin_session") !== "on") {
   </header>
 
   <main class="hist-wrap">
+
+    <!-- DASHBOARD -->
+    <div id="hist-dashboard"></div>
+
+    <!-- TOOLBAR -->
+    <div class="hist-toolbar">
+      <input
+        type="text"
+        id="hist-busca"
+        class="hist-busca"
+        placeholder="Buscar por cliente, número..."
+        oninput="renderHistorico()"
+      />
+      <select id="hist-status" class="hist-sel" onchange="renderHistorico()">
+        <option value="todos">Todos os status</option>
+        <option value="rascunho">Rascunho</option>
+        <option value="enviada">Enviada</option>
+        <option value="aceita">Aceita</option>
+        <option value="perdida">Perdida</option>
+      </select>
+      <select id="hist-ordem" class="hist-sel" onchange="renderHistorico()">
+        <option value="recente">Mais recente</option>
+        <option value="antigo">Mais antigo</option>
+        <option value="maior">Maior valor</option>
+        <option value="menor">Menor valor</option>
+      </select>
+    </div>
+
+    <!-- PILLS RÁPIDAS DE STATUS -->
+    <div class="pills-status">
+      <button id="pill-todos"    class="pill-status ativo" onclick="filtrarPor('todos')">Todas <span id="cnt-todos">0</span></button>
+      <button id="pill-rascunho" class="pill-status"       onclick="filtrarPor('rascunho')">Rascunho <span id="cnt-rascunho">0</span></button>
+      <button id="pill-enviada"  class="pill-status"       onclick="filtrarPor('enviada')">Enviada <span id="cnt-enviada">0</span></button>
+      <button id="pill-aceita"   class="pill-status"       onclick="filtrarPor('aceita')">Aceita <span id="cnt-aceita">0</span></button>
+      <button id="pill-perdida"  class="pill-status"       onclick="filtrarPor('perdida')">Perdida <span id="cnt-perdida">0</span></button>
+    </div>
+
+    <!-- AÇÕES GERAIS -->
     <div class="hist-top">
       <a class="btn-back" href="index.html">← Voltar</a>
       <button class="btn-clear" onclick="limparHistorico()">Limpar tudo</button>
     </div>
 
+    <!-- LISTA -->
     <div id="hist-list"></div>
+
   </main>
 
   <script src="historico.js"></script>
-  
-
-
-
-
 
 <nav class="bottom-nav">
-  <a class="bn-item " href="index.html">
+  <a class="bn-item" href="index.html">
     <span class="bn-icon">🏠</span>
     <span class="bn-lbl">Início</span>
   </a>
-  <a class="bn-item " href="pacotes.html">
+  <a class="bn-item" href="pacotes.html">
     <span class="bn-icon">📦</span>
     <span class="bn-lbl">Pacotes</span>
   </a>
@@ -48,7 +82,11 @@ if (localStorage.getItem("miguel_admin_session") !== "on") {
     <span class="bn-icon">📚</span>
     <span class="bn-lbl">Histórico</span>
   </a>
-  <a class="bn-item " href="admin.html">
+  <a class="bn-item" href="templates.html">
+    <span class="bn-icon">📋</span>
+    <span class="bn-lbl">Templates</span>
+  </a>
+  <a class="bn-item" href="admin.html">
     <span class="bn-icon">⚙️</span>
     <span class="bn-lbl">Admin</span>
   </a>
