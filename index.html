@@ -272,6 +272,7 @@ table td{padding:5px 3px;vertical-align:middle}
     <a class="hn-item ativo" href="index.html"><span class="hn-icon">🏠</span> Início</a>
     <a class="hn-item" href="pacotes.html"><span class="hn-icon">📦</span> Pacotes</a>
     <a class="hn-item" href="historico.html"><span class="hn-icon">📚</span> Histórico</a>
+    <a class="hn-item" href="templates.html"><span class="hn-icon">📋</span> Templates</a>
     <a class="hn-item" href="admin.html"><span class="hn-icon">⚙️</span> Admin</a>
   </nav>
 </header>
@@ -593,6 +594,15 @@ window.abrirEditor = abrirEditor;
     logoEl.src = "IMG/LOGO.png";
   }
 })();
+</script>
+<script src="templates.js"></script>
+<script>
+/* ── Carrega template se vier da página de templates ── */
+document.addEventListener("DOMContentLoaded", function() {
+  if (typeof carregarTemplateAplicado === "function") {
+    carregarTemplateAplicado();
+  }
+});
 </script>
 </body>
 </html>

@@ -408,12 +408,26 @@ function recalc() {
 
 /* ─── MONTAR / GERAR PROPOSTA ───────────────────────────────────────────── */
 
+/* ── NUMERAÇÃO SEQUENCIAL (Fase 4) ─────────────────────────────
+   Formato: 001/2025, 002/2025…   Chave: orc_contador_v1
+   ──────────────────────────────────────────────────────────── */
+function getProximoNumero() {
+  const anoAtual = new Date().getFullYear();
+  let c;
+  try { c = JSON.parse(localStorage.getItem("orc_contador_v1")) || {}; } catch { c = {}; }
+  if (c.ano !== anoAtual) c = { ano: anoAtual, seq: 0 };
+  c.seq = (c.seq || 0) + 1;
+  localStorage.setItem("orc_contador_v1", JSON.stringify(c));
+  return String(c.seq).padStart(3, "0") + "/" + anoAtual;
+}
+
 function montarOrcamento() {
   const d   = recalc();
   const now = new Date();
   return {
     id:      Date.now(),
-    numero:  "MM-" + now.getFullYear() + String(now.getMonth()+1).padStart(2,"0") + String(now.getDate()).padStart(2,"0") + "-" + String(now.getHours()).padStart(2,"0") + String(now.getMinutes()).padStart(2,"0"),
+    numero:  getProximoNumero(),
+    status:  "rascunho",
     data:    now.toLocaleDateString("pt-BR"),
     cliente: $("cli-nome").value.trim() || "(cliente nao informado)",
     contato: $("cli-contato").value.trim(),
