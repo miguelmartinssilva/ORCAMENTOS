@@ -196,7 +196,29 @@ table td{padding:5px 3px;vertical-align:middle}
    ══════════════════════════════════════════ */
 @media(min-width:800px){
   body{padding-bottom:0}
-  .bottom-nav{display:none}
+  
+  /* Sidebar */
+  .bottom-nav{display:flex;position:fixed;top:0;left:0;bottom:0;right:auto;
+    width:220px;height:100vh;
+    flex-direction:column;align-items:stretch;justify-content:flex-start;
+    border-top:none;border-right:1px solid var(--brd);padding:0 0 20px;gap:0;
+    background:rgba(11,11,15,.98);}
+  .bottom-nav::before{content:'MM STUDIO';display:block;
+    font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;
+    color:var(--g3);padding:22px 20px 20px;letter-spacing:3px;
+    text-transform:uppercase;border-bottom:1px solid var(--brd);margin-bottom:8px;}
+  .bn-item{flex:none;flex-direction:row;justify-content:flex-start;
+    gap:12px;padding:13px 20px;border-radius:0;}
+  .bn-lbl{font-family:'Syne',sans-serif;font-size:.78rem;letter-spacing:1.2px;
+    text-transform:uppercase;font-weight:700;}
+  .bn-icon{font-size:1.1rem;flex-shrink:0;width:20px;text-align:center}
+  .bn-item.ativo{background:rgba(22,160,75,.12);border-left:3px solid var(--g3);
+    padding-left:17px;color:var(--g3);}
+  .bn-item:not(.ativo):hover{background:rgba(255,255,255,.04);color:var(--tx);}
+  /* Oculta header antigo no desktop (sidebar substitui) */
+  header{display:none}
+  /* Conteúdo desloca */
+  .page{margin-left:220px;max-width:none;}
 
   /* Header horizontal */
   header{padding:14px 28px;text-align:left;display:flex;align-items:center;gap:18px}
@@ -547,10 +569,11 @@ table td{padding:5px 3px;vertical-align:middle}
 
 <!-- Menu MOBILE -->
 <nav class="bottom-nav">
-  <a class="bn-item ativo" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">Início</span></a>
-  <a class="bn-item" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">Pacotes</span></a>
-  <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">Histórico</span></a>
-  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">Painel</span></a>
+  <a class="bn-item ativo" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">INÍCIO</span></a>
+  <a class="bn-item" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">PACOTES</span></a>
+  <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">HISTÓRICO</span></a>
+  <a class="bn-item" href="templates.html"><span class="bn-icon">📋</span><span class="bn-lbl">TEMPLATES</span></a>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">PAINEL</span></a>
 </nav><script>
 // Abre o editor de proposta com os dados do orçamento atual
 function abrirEditor() {
