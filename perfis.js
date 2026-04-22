@@ -3,8 +3,6 @@
    Fase 1 do sistema profissional de orçamentos
    ═══════════════════════════════════════════════════════════════ */
 
-const PERFIS_KEY        = "orc_perfis_v1";
-const PERFIL_ATIVO_KEY  = "orc_perfil_ativo_v1";
 
 /* ── ESTRUTURA PADRÃO DE PERFIL ─────────────────────────────── */
 
@@ -115,7 +113,7 @@ function renderListaPerfis() {
             : `<span style="color:${p.cor};font-weight:700;font-size:.9rem">${iniciais || "?"}</span>`}
         </div>
         <div class="perfil-info">
-          <div class="perfil-nome">${p.tipo === "pj" ? (p.nomeEmpresa || p.nome) : p.nome}</div>
+          <div class="perfil-nome">${esc(p.tipo === "pj" ? (p.nomeEmpresa || p.nome) : p.nome)}</div>
           <div class="perfil-sub">${p.tipo === "pj" ? "Pessoa Jurídica" : "Pessoa Física"}${isAtivo ? " · <span class='ativo-badge'>ativo</span>" : ""}</div>
         </div>
       </div>`;
@@ -181,6 +179,9 @@ function abrirEdicaoPerfil(id) {
   form.style.display = "block";
   document.getElementById("perfil-form-titulo").textContent =
     perfil.tipo === "pj" ? (perfil.nomeEmpresa || perfil.nome) : perfil.nome;
+
+  /* Dispara evento customizado para que admin.html sincronize o radio sem override frágil */
+  document.dispatchEvent(new CustomEvent('perfilCarregado', { detail: { id, tipo: perfil.tipo } }));
 }
 
 function toggleTipoCampos(tipo) {
@@ -243,7 +244,38 @@ function confirmarApagarPerfil(id) {
   toast("Perfil apagado.", "#5a5a72");
 }
 
-/* ── UPLOAD DE IMAGENS ──────────────────────────────────────── */
+/* ── UPLOAD DE IMAGENS com compressão automática ─────────────
+   Redimensiona para max 400×400px e comprime para JPEG/WebP 80%
+   antes de salvar como base64 — evita lotar o localStorage.
+   ──────────────────────────────────────────────────────────── */
+
+const IMG_MAX_PX   = 400;  // px — largura/altura máxima
+const IMG_QUALITY  = 0.80; // qualidade JPEG
+
+function _comprimirImagem(src, callback) {
+  const img = new Image();
+  img.onload = function() {
+    const maxDim = IMG_MAX_PX;
+    let w = img.naturalWidth;
+    let h = img.naturalHeight;
+    if (w > maxDim || h > maxDim) {
+      const ratio = Math.min(maxDim / w, maxDim / h);
+      w = Math.round(w * ratio);
+      h = Math.round(h * ratio);
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width  = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+    // Tenta WebP (menor), cai para JPEG
+    const fmt = canvas.toDataURL("image/webp", IMG_QUALITY);
+    const out = fmt.startsWith("data:image/webp") ? fmt : canvas.toDataURL("image/jpeg", IMG_QUALITY);
+    callback(out);
+  };
+  img.onerror = function() { callback(src); /* fallback sem compressão */ };
+  img.src = src;
+}
 
 function uploadImagem(campo, previewId, tipo) {
   const input = document.createElement("input");
@@ -254,14 +286,17 @@ function uploadImagem(campo, previewId, tipo) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = ev => {
-      const base64 = ev.target.result;
-      const id = parseInt(_getVal("pf-id"));
-      const lista = getPerfis();
-      const idx = lista.findIndex(p => p.id === id);
-      if (idx >= 0) lista[idx][campo] = base64;
-      salvarPerfis(lista);
-      _imgPreview(previewId, base64, tipo);
-      toast(tipo + " salva!", "#16a04b");
+      _comprimirImagem(ev.target.result, function(base64) {
+        const id   = parseInt(_getVal("pf-id"));
+        const lista = getPerfis();
+        const idx  = lista.findIndex(p => p.id === id);
+        if (idx >= 0) lista[idx][campo] = base64;
+        salvarPerfis(lista);
+        _imgPreview(previewId, base64, tipo);
+        // Mostrar tamanho aproximado
+        const kb = Math.round(base64.length * 0.75 / 1024);
+        toast(`${tipo} salva! (~${kb} KB)`, "#16a04b");
+      });
     };
     reader.readAsDataURL(file);
   };
@@ -352,7 +387,7 @@ function renderSeletorPerfil() {
   const ativoId = getPerfilAtivo()?.id;
   sel.innerHTML = perfis.map(p => {
     const nome = p.tipo === "pj" ? (p.nomeEmpresa || p.nome) : p.nome;
-    return `<option value="${p.id}" ${p.id === ativoId ? "selected" : ""}>${nome} (${p.tipo === "pj" ? "PJ" : "PF"})</option>`;
+    return `<option value="${p.id}" ${p.id === ativoId ? "selected" : ""}>${esc(nome)} (${p.tipo === "pj" ? "PJ" : "PF"})</option>`;
   }).join("");
 }
 

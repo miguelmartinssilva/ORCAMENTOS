@@ -3,12 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0f">
   <title>Histórico de Orçamentos</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="historico.css">
-</head>
+  <style>
+/* ── BOTTOM NAV → SIDEBAR (desktop) ── */
+@media(min-width:800px){
+  body{padding-bottom:0}
+  .bottom-nav{position:fixed;top:0;left:0;bottom:0;right:auto;width:220px;height:100vh;flex-direction:column;align-items:stretch;justify-content:flex-start;border-top:none;border-right:1px solid var(--brd);padding:0 0 20px;gap:0}
+  .bottom-nav::before{content:'MM STUDIO';display:block;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:var(--g3);padding:22px 20px 20px;letter-spacing:3px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+  .bn-item{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:13px 20px;border-radius:0}
+  .bn-lbl{font-size:.8rem;letter-spacing:.5px}
+  .bn-icon{font-size:1.1rem}
+  .bn-item.ativo{background:rgba(22,160,75,.1);border-left:3px solid var(--g3);padding-left:17px;color:var(--g3)}
+  .bn-item:not(.ativo):hover{background:rgba(255,255,255,.03)}
+  .hist-header{margin-left:220px}
+  .hist-wrap{margin-left:220px;padding:28px 32px 40px}
+  .toast{bottom:24px}
+}
+  </style>
+</head><script src="config.js"></script>
 <script>
-if (localStorage.getItem("miguel_admin_session") !== "on") {
+if (!sessaoValida()) {
   window.location.href = "login.html";
 }
 </script>
@@ -65,30 +83,26 @@ if (localStorage.getItem("miguel_admin_session") !== "on") {
     <!-- LISTA -->
     <div id="hist-list"></div>
 
-  </main>
-
-  <script src="historico.js"></script>
+  </main><script src="historico.js"></script>
 
 <nav class="bottom-nav">
   <a class="bn-item" href="index.html">
     <span class="bn-icon">🏠</span>
-    <span class="bn-lbl">Início</span>
+    <span class="bn-lbl">INÍCIO</span>
   </a>
   <a class="bn-item" href="pacotes.html">
     <span class="bn-icon">📦</span>
-    <span class="bn-lbl">Pacotes</span>
+    <span class="bn-lbl">PACOTES</span>
   </a>
   <a class="bn-item ativo" href="historico.html">
     <span class="bn-icon">📚</span>
-    <span class="bn-lbl">Histórico</span>
+    <span class="bn-lbl">HISTÓRICO</span>
   </a>
   <a class="bn-item" href="templates.html">
     <span class="bn-icon">📋</span>
-    <span class="bn-lbl">Templates</span>
+    <span class="bn-lbl">TEMPLATES</span>
   </a>
-  <a class="bn-item" href="admin.html">
-    <span class="bn-icon">⚙️</span>
-    <span class="bn-lbl">Admin</span>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">PAINEL</span>
   </a>
 </nav>
 </body>

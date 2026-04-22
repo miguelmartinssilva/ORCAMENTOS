@@ -1,0 +1,19 @@
+{
+  "name": "MM Orçamentos",
+  "short_name": "Orçamentos",
+  "description": "Sistema de orçamentos profissionais — Miguel Martins",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0b0b0f",
+  "theme_color": "#0b0b0f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "IMG/LOGO.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"]
+}

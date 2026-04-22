@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0f"/>
 <title>Orçamento | Miguel Martins</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="config.js"></script>
 <script>
-if (localStorage.getItem("miguel_admin_session") !== "on") {
+if (!sessaoValida()) {
   window.location.href = "login.html";
 }
 </script>
@@ -196,22 +196,31 @@ table td{padding:5px 3px;vertical-align:middle}
    ══════════════════════════════════════════ */
 @media(min-width:800px){
   body{padding-bottom:0}
-  .bottom-nav{display:none}
-
-  /* Header horizontal */
-  header{padding:14px 28px;text-align:left;display:flex;align-items:center;gap:18px}
-  header::after{display:none}
-  #logo-wrap{margin:0;flex-shrink:0}
-  #logo-wrap img{max-width:46px;max-height:36px}
-  header h1{font-size:1.45rem;letter-spacing:1px}
-  header p.sub{margin:0;font-size:.6rem}
-
-  /* Nav no header */
-  .header-nav{display:flex;gap:4px;margin-left:auto}
-  .hn-item{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--tx2);padding:7px 13px;border-radius:9px;transition:all .18s;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:500;border:1px solid transparent}
-  .hn-item:hover{color:var(--g3);background:rgba(29,214,104,.06);border-color:var(--brd)}
-  .hn-item.ativo{color:var(--g3);background:rgba(29,214,104,.1);border-color:rgba(29,214,104,.3)}
-  .hn-icon{font-size:1rem;line-height:1}
+  
+  /* Sidebar */
+  .bottom-nav{display:flex;position:fixed;top:0;left:0;bottom:0;right:auto;
+    width:220px;height:100vh;
+    flex-direction:column;align-items:stretch;justify-content:flex-start;
+    border-top:none;border-right:1px solid var(--brd);padding:0 0 20px;gap:0;
+    background:rgba(11,11,15,.98);}
+  .bottom-nav::before{content:'MM STUDIO';display:block;
+    font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;
+    color:var(--g3);padding:22px 20px 20px;letter-spacing:3px;
+    text-transform:uppercase;border-bottom:1px solid var(--brd);margin-bottom:8px;}
+  .bn-item{flex:none;flex-direction:row;justify-content:flex-start;
+    gap:12px;padding:13px 20px;border-radius:0;}
+  .bn-lbl{font-family:'Syne',sans-serif;font-size:.78rem;letter-spacing:1.2px;
+    text-transform:uppercase;font-weight:700;}
+  .bn-icon{font-size:1.1rem;flex-shrink:0;width:20px;text-align:center}
+  .bn-item.ativo{background:rgba(22,160,75,.12);border-left:3px solid var(--g3);
+    padding-left:17px;color:var(--g3);}
+  .bn-item:not(.ativo):hover{background:rgba(255,255,255,.04);color:var(--tx);}
+  /* Oculta header antigo no desktop (sidebar substitui) */
+  header{display:none}
+  /* Barra de perfil desloca junto com o conteúdo */
+  .perfil-bar{margin-left:220px}
+  /* Conteúdo desloca */
+  .page{margin-left:220px;max-width:none;}
 
   /* Grid 2 colunas */
   .page{padding:0 24px}
@@ -272,14 +281,13 @@ table td{padding:5px 3px;vertical-align:middle}
     <a class="hn-item ativo" href="index.html"><span class="hn-icon">🏠</span> Início</a>
     <a class="hn-item" href="pacotes.html"><span class="hn-icon">📦</span> Pacotes</a>
     <a class="hn-item" href="historico.html"><span class="hn-icon">📚</span> Histórico</a>
-    <a class="hn-item" href="templates.html"><span class="hn-icon">📋</span> Templates</a>
     <a class="hn-item" href="admin.html"><span class="hn-icon">⚙️</span> Admin</a>
   </nav>
 </header>
-<div style="padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px">
+<div class="perfil-bar" style="padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px">
   <span style="font-size:.65rem;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;flex-shrink:0">Perfil:</span>
   <select id="seletor-perfil" onchange="onMudarPerfilAtivo(this.value)" style="flex:1;background:var(--bg4);border:1.5px solid var(--brd);border-radius:8px;color:var(--tx);font-family:Outfit,sans-serif;font-size:.8rem;padding:5px 10px"></select>
-  <a href="perfis.html" style="font-size:.7rem;color:var(--g3);text-decoration:none;flex-shrink:0">Editar ›</a>
+  <a href="admin.html" style="font-size:.7rem;color:var(--g3);text-decoration:none;flex-shrink:0">Editar ›</a>
 </div>
 
 <div class="page">
@@ -509,10 +517,7 @@ table td{padding:5px 3px;vertical-align:middle}
 </div><!-- /layout -->
 </div><!-- /page -->
 
-<div id="toast"></div>
-<script src="perfis.js"></script>
-<script src="app.js"></script>
-<script>
+<div id="toast"></div><script src="perfis.js"></script><script src="app.js"></script><script>
 /* Espelha os valores do resumo mobile para a sidebar desktop */
 (function() {
   const orig = window.recalc;
@@ -550,13 +555,12 @@ table td{padding:5px 3px;vertical-align:middle}
 
 <!-- Menu MOBILE -->
 <nav class="bottom-nav">
-  <a class="bn-item ativo" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">Início</span></a>
-  <a class="bn-item" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">Pacotes</span></a>
-  <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">Histórico</span></a>
-  <a class="bn-item" href="admin.html"><span class="bn-icon">⚙️</span><span class="bn-lbl">Admin</span></a>
-</nav>
-
-<script>
+  <a class="bn-item ativo" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">INÍCIO</span></a>
+  <a class="bn-item" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">PACOTES</span></a>
+  <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">HISTÓRICO</span></a>
+  <a class="bn-item" href="templates.html"><span class="bn-icon">📋</span><span class="bn-lbl">TEMPLATES</span></a>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">PAINEL</span></a>
+</nav><script>
 // Abre o editor de proposta com os dados do orçamento atual
 function abrirEditor() {
   const d = recalc();
@@ -594,15 +598,6 @@ window.abrirEditor = abrirEditor;
     logoEl.src = "IMG/LOGO.png";
   }
 })();
-</script>
-<script src="templates.js"></script>
-<script>
-/* ── Carrega template se vier da página de templates ── */
-document.addEventListener("DOMContentLoaded", function() {
-  if (typeof carregarTemplateAplicado === "function") {
-    carregarTemplateAplicado();
-  }
-});
 </script>
 </body>
 </html>

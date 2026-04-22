@@ -361,3 +361,17 @@ body{
   .hist-head{ flex-direction:column; gap:10px; }
   .hist-head-right{ flex-direction:row; align-items:center; width:100%; justify-content:space-between; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   DESKTOP ≥ 800px — historico usa sidebar do admin.css (via
+   bottom-nav transform). Aqui ajusta apenas o conteúdo.
+   ══════════════════════════════════════════════════════════════ */
+@media(min-width:800px){
+  body{padding-bottom:0}
+  .hist-header{margin-left:220px}
+  .hist-wrap{margin-left:220px;padding:28px 32px 40px}
+  .hist-toolbar{gap:12px}
+  .dash-grid{grid-template-columns:repeat(4,1fr)}
+  .hist-card-inner{flex-direction:row;align-items:flex-start;gap:16px}
+  .toast{bottom:24px}
+}

@@ -3,7 +3,13 @@
    Melhorias: status pipeline, filtros, busca, dashboard métricas
    ═══════════════════════════════════════════════════════════════ */
 
-const HIST_KEY = "historico_orcamentos_miguel";
+
+const STATUS_CONFIG = {
+  rascunho: { label: "Rascunho", cor: "#5a5a72", bg: "rgba(90,90,114,.18)",  borda: "rgba(90,90,114,.35)"  },
+  enviada:  { label: "Enviada",  cor: "#6aaeff", bg: "rgba(26,74,122,.18)",  borda: "rgba(80,150,255,.35)" },
+  aceita:   { label: "Aceita",   cor: "#1dd668", bg: "rgba(22,160,75,.18)",  borda: "rgba(29,214,104,.35)" },
+  perdida:  { label: "Perdida",  cor: "#ff4466", bg: "rgba(155,28,53,.18)",  borda: "rgba(255,68,102,.35)" },
+};
 
 const STATUS_CONFIG = {
   rascunho: { label: "Rascunho", cor: "#5a5a72", bg: "rgba(90,90,114,.18)",  borda: "rgba(90,90,114,.35)"  },
@@ -159,9 +165,9 @@ function _cardHtml(orc) {
     <article class="hist-card" style="--st-cor:${cfg.cor};--st-bg:${cfg.bg};--st-brd:${cfg.borda}">
       <div class="hist-head">
         <div class="hist-head-info">
-          <div class="hist-title">${orc.cliente}</div>
-          <div class="hist-meta">#${orc.numero} · ${orc.data}</div>
-          <div class="hist-meta">${orc.tipo}${orc.contato ? " · " + orc.contato : ""}</div>
+          <div class="hist-title">${esc(orc.cliente)}</div>
+          <div class="hist-meta">#${esc(orc.numero)} · ${esc(orc.data)}</div>
+          <div class="hist-meta">${esc(orc.tipo)}${orc.contato ? " · " + esc(orc.contato) : ""}</div>
         </div>
         <div class="hist-head-right">
           <div class="hist-total">${money(orc.total)}</div>
@@ -174,11 +180,11 @@ function _cardHtml(orc) {
       <div class="hist-items">
         ${orc.itens.map(item => `
           <div class="hist-item">
-            <span>${item.desc}</span>
+            <span>${esc(item.desc)}</span>
             <strong>${item.qtd}x · ${money(item.sub)}</strong>
           </div>`).join("")}
       </div>
-      ${orc.obs ? `<div class="hist-obs"><strong>Obs:</strong> ${orc.obs}</div>` : ""}
+      ${orc.obs ? `<div class="hist-obs"><strong>Obs:</strong> ${esc(orc.obs)}</div>` : ""}
       <div class="hist-actions">
         <button class="btn-mini btn-dup"    onclick="duplicarOrc(${orc.id})">⧉ Duplicar</button>
         <button class="btn-mini btn-edit"   onclick="editarOrc(${orc.id})">✎ Editar</button>
