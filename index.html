@@ -217,6 +217,8 @@ table td{padding:5px 3px;vertical-align:middle}
   .bn-item:not(.ativo):hover{background:rgba(255,255,255,.04);color:var(--tx);}
   /* Oculta header antigo no desktop (sidebar substitui) */
   header{display:none}
+  /* Barra de perfil desloca junto com o conteúdo */
+  .perfil-bar{margin-left:220px}
   /* Conteúdo desloca */
   .page{margin-left:220px;max-width:none;}
 
@@ -283,7 +285,7 @@ table td{padding:5px 3px;vertical-align:middle}
     <a class="hn-item" href="admin.html"><span class="hn-icon">👤</span> Painel</a>
   </nav>
 </header>
-<div style="padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px">
+<div class="perfil-bar" style="padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px">
   <span style="font-size:.65rem;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;flex-shrink:0">Perfil:</span>
   <select id="seletor-perfil" onchange="onMudarPerfilAtivo(this.value)" style="flex:1;background:var(--bg4);border:1.5px solid var(--brd);border-radius:8px;color:var(--tx);font-family:Outfit,sans-serif;font-size:.8rem;padding:5px 10px"></select>
   <a href="admin.html" style="font-size:.7rem;color:var(--g3);text-decoration:none;flex-shrink:0">Editar ›</a>
