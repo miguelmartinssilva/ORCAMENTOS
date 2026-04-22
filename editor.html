@@ -2,12 +2,15 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
+<link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0f"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Editor de Proposta | Miguel Martins</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="config.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-if (localStorage.getItem("miguel_admin_session") !== "on") {
+if (!sessaoValida()) {
   window.location.href = "login.html";
 }
 </script>
@@ -34,6 +37,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-he
 .btn-top.primary:hover{opacity:.9}
 
 /* ── LAYOUT ── */
+
+/* ── BOTTOM NAV styles ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:62px;background:rgba(17,17,22,.97);border-top:1px solid var(--brd);display:flex;align-items:stretch;z-index:999;backdrop-filter:blur(10px)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:var(--tx2);transition:color .18s}
+.bn-item:hover,.bn-item.ativo{color:var(--g3)}
+.bn-icon{font-size:1.35rem;line-height:1}
+.bn-lbl{font-family:'Outfit',sans-serif;font-size:.62rem;letter-spacing:.8px;text-transform:uppercase;font-weight:500}
 .page{max-width:860px;margin:0 auto;padding:14px}
 .split{display:flex;flex-direction:column;gap:14px}
 @media(min-width:760px){
@@ -165,6 +175,28 @@ textarea.ed-inline-block{resize:vertical;min-height:56px;line-height:1.5}
 /* ERRO */
 #editor-erro{display:none;text-align:center;padding:60px 20px;color:var(--tx2)}
 #editor-erro h2{color:var(--r3);margin-bottom:10px}
+
+/* ── BOTTOM NAV → SIDEBAR (desktop ≥ 800px) ── */
+@media(min-width:800px){
+  body{padding-bottom:0}
+  .bottom-nav{position:fixed;top:0;left:0;bottom:0;right:auto;width:220px;height:100vh;
+    flex-direction:column;align-items:stretch;justify-content:flex-start;
+    border-top:none;border-right:1px solid var(--brd);padding:0 0 20px;gap:0}
+  .bottom-nav::before{content:'MM STUDIO';display:block;font-family:'Syne',sans-serif;
+    font-size:.95rem;font-weight:800;color:var(--g3);padding:22px 20px 20px;
+    letter-spacing:3px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+  .bn-item{flex:none;flex-direction:row;justify-content:flex-start;
+    gap:12px;padding:13px 20px;border-radius:0}
+  .bn-lbl{font-size:.8rem;letter-spacing:.5px}
+  .bn-icon{font-size:1.1rem}
+  .bn-item.ativo{background:rgba(22,160,75,.1);border-left:3px solid var(--g3);
+    padding-left:17px;color:var(--g3)}
+  .bn-item:not(.ativo):hover{background:rgba(255,255,255,.03)}
+  .toast{bottom:24px}
+}
+  .topbar,.page{margin-left:220px}
+  body{padding-bottom:0}
+
 </style>
 </head>
 <body>
@@ -174,6 +206,7 @@ textarea.ed-inline-block{resize:vertical;min-height:56px;line-height:1.5}
   <div class="topbar-title">Editor de proposta <span>clique em qualquer campo para editar</span></div>
   <button class="btn-top" onclick="voltarOrcamento()">← Voltar</button>
   <button class="btn-top" onclick="salvarRascunho()">Salvar rascunho</button>
+  <button class="btn-top btn-tpl" onclick="salvarTemplateDoEditor()" title="Salvar estrutura como template reutilizável">📋 Salvar como template</button>
   <button class="btn-top primary" onclick="gerarPDFEditor()">⬇ Gerar PDF</button>
 </div>
 
@@ -392,6 +425,7 @@ textarea.ed-inline-block{resize:vertical;min-height:56px;line-height:1.5}
 
 <script src="perfis.js"></script>
 <script src="editor.js"></script>
+<script src="templates.js"></script>
 <script>
 window.toast = function(msg, cor) {
   const el = document.getElementById("ed-toast");
@@ -402,6 +436,37 @@ window.toast = function(msg, cor) {
   setTimeout(() => el.classList.remove("on"), 2400);
 };
 carregarEditor();
+
+/* ── Salvar estado atual do editor como template ── */
+function salvarTemplateDoEditor() {
+  if (typeof coletarEstadoDom === "function") coletarEstadoDom();
+  const estado = (typeof getEstado === "function") ? getEstado() : null;
+  if (!estado || !estado.itens || !estado.itens.length) {
+    toast("Adicione itens antes de salvar como template.", "#c0253d");
+    return;
+  }
+  salvarComoTemplate(estado);
+}
 </script>
+<style>
+.btn-tpl {
+  background: rgba(124,58,237,.15) !important;
+  border-color: rgba(124,58,237,.4) !important;
+  color: #a78bfa !important;
+}
+.btn-tpl:hover {
+  background: rgba(124,58,237,.28) !important;
+  color: #c4b5fd !important;
+}
+</style>
+
+<!-- ── NAV (mobile: bottom bar / desktop: sidebar) ── -->
+<nav class="bottom-nav">
+  <a class="bn-item" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">Início</span></a>
+  <a class="bn-item" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">Pacotes</span></a>
+  <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">Histórico</span></a>
+  <a class="bn-item" href="templates.html"><span class="bn-icon">📋</span><span class="bn-lbl">Templates</span></a>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">Painel</span></a>
+</nav>
 </body>
 </html>

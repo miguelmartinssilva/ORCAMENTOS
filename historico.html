@@ -3,13 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0f">
   <title>Histórico de Orçamentos</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="historico.css">
-</head>
+  <style>
+/* ── BOTTOM NAV → SIDEBAR (desktop) ── */
+@media(min-width:800px){
+  body{padding-bottom:0}
+  .bottom-nav{position:fixed;top:0;left:0;bottom:0;right:auto;width:220px;height:100vh;flex-direction:column;align-items:stretch;justify-content:flex-start;border-top:none;border-right:1px solid var(--brd);padding:0 0 20px;gap:0}
+  .bottom-nav::before{content:'MM STUDIO';display:block;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:var(--g3);padding:22px 20px 20px;letter-spacing:3px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+  .bn-item{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:13px 20px;border-radius:0}
+  .bn-lbl{font-size:.8rem;letter-spacing:.5px}
+  .bn-icon{font-size:1.1rem}
+  .bn-item.ativo{background:rgba(22,160,75,.1);border-left:3px solid var(--g3);padding-left:17px;color:var(--g3)}
+  .bn-item:not(.ativo):hover{background:rgba(255,255,255,.03)}
+  .hist-header{margin-left:220px}
+  .hist-wrap{margin-left:220px;padding:28px 32px 40px}
+  .toast{bottom:24px}
+}
+  </style>
+</head><script src="config.js"></script>
 <script>
-// Proteção de sessão
-if (localStorage.getItem("miguel_admin_session") !== "on") {
+if (!sessaoValida()) {
   window.location.href = "login.html";
 }
 </script>
@@ -20,27 +37,60 @@ if (localStorage.getItem("miguel_admin_session") !== "on") {
   </header>
 
   <main class="hist-wrap">
+
+    <!-- DASHBOARD -->
+    <div id="hist-dashboard"></div>
+
+    <!-- TOOLBAR -->
+    <div class="hist-toolbar">
+      <input
+        type="text"
+        id="hist-busca"
+        class="hist-busca"
+        placeholder="Buscar por cliente, número..."
+        oninput="renderHistorico()"
+      />
+      <select id="hist-status" class="hist-sel" onchange="renderHistorico()">
+        <option value="todos">Todos os status</option>
+        <option value="rascunho">Rascunho</option>
+        <option value="enviada">Enviada</option>
+        <option value="aceita">Aceita</option>
+        <option value="perdida">Perdida</option>
+      </select>
+      <select id="hist-ordem" class="hist-sel" onchange="renderHistorico()">
+        <option value="recente">Mais recente</option>
+        <option value="antigo">Mais antigo</option>
+        <option value="maior">Maior valor</option>
+        <option value="menor">Menor valor</option>
+      </select>
+    </div>
+
+    <!-- PILLS RÁPIDAS DE STATUS -->
+    <div class="pills-status">
+      <button id="pill-todos"    class="pill-status ativo" onclick="filtrarPor('todos')">Todas <span id="cnt-todos">0</span></button>
+      <button id="pill-rascunho" class="pill-status"       onclick="filtrarPor('rascunho')">Rascunho <span id="cnt-rascunho">0</span></button>
+      <button id="pill-enviada"  class="pill-status"       onclick="filtrarPor('enviada')">Enviada <span id="cnt-enviada">0</span></button>
+      <button id="pill-aceita"   class="pill-status"       onclick="filtrarPor('aceita')">Aceita <span id="cnt-aceita">0</span></button>
+      <button id="pill-perdida"  class="pill-status"       onclick="filtrarPor('perdida')">Perdida <span id="cnt-perdida">0</span></button>
+    </div>
+
+    <!-- AÇÕES GERAIS -->
     <div class="hist-top">
       <a class="btn-back" href="index.html">← Voltar</a>
       <button class="btn-clear" onclick="limparHistorico()">Limpar tudo</button>
     </div>
 
+    <!-- LISTA -->
     <div id="hist-list"></div>
-  </main>
 
-  <script src="historico.js"></script>
-  
-
-
-
-
+  </main><script src="historico.js"></script>
 
 <nav class="bottom-nav">
-  <a class="bn-item " href="index.html">
+  <a class="bn-item" href="index.html">
     <span class="bn-icon">🏠</span>
     <span class="bn-lbl">Início</span>
   </a>
-  <a class="bn-item " href="pacotes.html">
+  <a class="bn-item" href="pacotes.html">
     <span class="bn-icon">📦</span>
     <span class="bn-lbl">Pacotes</span>
   </a>
@@ -48,9 +98,11 @@ if (localStorage.getItem("miguel_admin_session") !== "on") {
     <span class="bn-icon">📚</span>
     <span class="bn-lbl">Histórico</span>
   </a>
-  <a class="bn-item " href="admin.html">
-    <span class="bn-icon">⚙️</span>
-    <span class="bn-lbl">Admin</span>
+  <a class="bn-item" href="templates.html">
+    <span class="bn-icon">📋</span>
+    <span class="bn-lbl">Templates</span>
+  </a>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">Painel</span>
   </a>
 </nav>
 </body>

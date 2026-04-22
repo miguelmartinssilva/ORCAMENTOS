@@ -3,92 +3,510 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Admin | Miguel Martins</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0f">
+  <title>Painel | Miguel Martins</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css">
+  <script src="config.js"></script>
+  <script>if (!sessaoValida()) { window.location.href = "login.html"; }</script>
 </head>
-<body class="admin-body">
-  <header class="admin-header">
-    <div>
-      <div class="eyebrow">Painel administrativo</div>
-      <h1 class="admin-title">Miguel <span>Martins</span></h1>
+<body>
+
+<!-- ── COVER ── -->
+<div class="profile-cover">
+  <div class="cover-pattern"></div>
+  <button class="cover-logout" id="logout-btn">Sair →</button>
+</div>
+
+<!-- ── AVATAR + NOME ── -->
+<div class="avatar-zone">
+  <div class="avatar-ring" onclick="trocarAvatarAdmin()" title="Clique para trocar foto">
+    <div class="avatar-inner" id="admin-avatar-inner">
+      <span class="avatar-initials" id="admin-initials">MM</span>
     </div>
-    <button id="logout-btn" class="btn-admin btn-danger">Sair</button>
-  </header>
+    <div class="avatar-edit-btn">✎</div>
+  </div>
+  <div class="profile-name-row">
+    <div class="profile-name" id="admin-profile-name">Miguel <em>Martins</em></div>
+    <div class="profile-handle" id="admin-profile-handle">Designer · Videomaker</div>
+    <span class="profile-badge" id="admin-profile-badge">Pessoa Física</span>
+  </div>
+</div>
 
-  <main class="admin-wrap">
-    <section class="admin-card">
-      <h2>Atalhos</h2>
-      <div class="admin-grid">
-        <a class="admin-link" href="index.html">Abrir orçamento</a>
-        <a class="admin-link" href="historico.html">Abrir histórico</a>
+<!-- ── STATS ── -->
+<div class="stats-strip">
+  <div class="stat-col" onclick="window.location.href='historico.html'">
+    <div class="stat-val" id="stat-total">0</div>
+    <div class="stat-lbl">Propostas</div>
+  </div>
+  <div class="stat-col" onclick="window.location.href='historico.html'">
+    <div class="stat-val" id="stat-receita">R$0</div>
+    <div class="stat-lbl">Gerado</div>
+  </div>
+  <div class="stat-col" onclick="window.location.href='historico.html'">
+    <div class="stat-val" id="stat-taxa">—</div>
+    <div class="stat-lbl">Fechamento</div>
+  </div>
+  <div class="stat-col" onclick="window.location.href='historico.html'">
+    <div class="stat-val" id="stat-ticket">R$0</div>
+    <div class="stat-lbl">Ticket médio</div>
+  </div>
+</div>
+
+<!-- ── ABAS ── -->
+<div class="profile-tabs">
+  <button class="tab-btn ativo" data-tab="perfil"><span class="tab-ico">👤</span> Perfil</button>
+  <button class="tab-btn" data-tab="servicos"><span class="tab-ico">🛠</span> Serviços</button>
+  <button class="tab-btn" data-tab="pacotes"><span class="tab-ico">📦</span> Pacotes</button>
+  <button class="tab-btn" data-tab="conta"><span class="tab-ico">⚙️</span> Conta</button>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ABA: PERFIL                                -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-panel ativo" id="tab-perfil">
+
+  <!-- Seletor de perfis estilo Stories -->
+  <div class="pcard">
+    <div class="pcard-head">👥 Meus perfis</div>
+    <div class="pcard-body">
+      <div class="perfis-mini" id="perfis-mini-lista"></div>
+    </div>
+  </div>
+
+  <!-- Form de edição do perfil ativo -->
+  <div class="pcard" id="perfil-form-card">
+    <div class="pcard-head">
+      <span>✏️ Editando: <span id="perfil-form-titulo">—</span></span>
+    </div>
+    <div class="pcard-body" id="perfil-form">
+      <input type="hidden" id="pf-id">
+
+      <!-- Tipo PF / PJ -->
+      <div class="fg">
+        <label class="lbl">Tipo de cadastro</label>
+        <div class="tipo-toggle">
+          <label><input type="radio" name="pf-tipo-radio" value="pf" checked><span>Pessoa Física</span></label>
+          <label><input type="radio" name="pf-tipo-radio" value="pj"><span>Pessoa Jurídica</span></label>
+        </div>
+        <input type="hidden" id="pf-tipo" value="pf">
       </div>
-    </section>
 
-    <section class="admin-card">
-      <h2>Alterar login</h2>
+      <!-- Nome PF -->
+      <div id="campo-pf">
+        <div class="fg">
+          <label class="lbl">Nome completo</label>
+          <input type="text" id="pf-nome" placeholder="Seu nome">
+        </div>
+      </div>
+      <!-- Nome PJ -->
+      <div id="campo-pj" style="display:none">
+        <div class="fg">
+          <label class="lbl">Nome da empresa</label>
+          <input type="text" id="pf-nome-empresa" placeholder="Razão social ou fantasia">
+        </div>
+      </div>
+
+      <!-- Documento PF -->
+      <div id="campo-documento">
+        <div class="fg">
+          <label class="lbl">CPF</label>
+          <input type="text" id="pf-cpf" placeholder="000.000.000-00">
+        </div>
+      </div>
+      <!-- Documento PJ -->
+      <div id="campo-pj-doc" style="display:none">
+        <div class="fg">
+          <label class="lbl">CNPJ</label>
+          <input type="text" id="pf-cnpj" placeholder="00.000.000/0001-00">
+        </div>
+      </div>
+
+      <!-- Contato -->
+      <div class="secao-sep">Contato</div>
+      <div class="g2">
+        <div class="fg">
+          <label class="lbl">WhatsApp</label>
+          <input type="tel" id="pf-whatsapp" placeholder="(63) 99999-9999">
+        </div>
+        <div class="fg">
+          <label class="lbl">Telefone</label>
+          <input type="tel" id="pf-telefone" placeholder="(63) 3333-3333">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="lbl">E-mail</label>
+        <input type="email" id="pf-email" placeholder="seuemail@email.com">
+      </div>
+      <div class="fg">
+        <label class="lbl">Endereço (opcional)</label>
+        <input type="text" id="pf-endereco" placeholder="Cidade - Estado">
+      </div>
+
+      <!-- PIX -->
+      <div class="secao-sep">Chave PIX</div>
+      <div class="g2">
+        <div class="fg">
+          <label class="lbl">Tipo</label>
+          <select id="pf-pix-tipo">
+            <option value="cpf">CPF</option>
+            <option value="cnpj">CNPJ</option>
+            <option value="email">E-mail</option>
+            <option value="telefone">Telefone</option>
+            <option value="aleatoria">Aleatória</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="lbl">Chave</label>
+          <input type="text" id="pf-pix-chave" placeholder="sua@chave.pix">
+        </div>
+      </div>
+
+      <!-- Logo & Assinatura -->
+      <div class="secao-sep">Logo &amp; Assinatura</div>
+      <div class="g2">
+        <div class="fg">
+          <label class="lbl">Logo</label>
+          <div class="img-area" id="logo-preview"><span class="img-placeholder">Nenhuma imagem</span></div>
+          <div class="img-btns">
+            <button class="btn-img" onclick="uploadImagem('logo','logo-preview','Logo')">Carregar</button>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="lbl">Assinatura</label>
+          <div class="img-area" id="assinatura-preview"><span class="img-placeholder">Nenhuma imagem</span></div>
+          <div class="img-btns">
+            <button class="btn-img" onclick="uploadImagem('assinatura','assinatura-preview','Assinatura')">Carregar</button>
+            <button class="btn-img" onclick="abrirCanvasAssinatura()">Desenhar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cor do perfil -->
+      <div class="fg">
+        <label class="lbl">Cor de identificação</label>
+        <input type="color" id="pf-cor" value="#16a04b" style="width:60px;height:36px;padding:3px 6px">
+      </div>
+
+      <!-- Visibilidade no PDF — usando toggle CSS-only -->
+      <div class="secao-sep">O que aparece no PDF</div>
+      <div>
+        <div class="toggle-row">
+          <span class="toggle-label">Mostrar CPF / CNPJ</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pf-vis-doc" checked>
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Mostrar chave PIX</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pf-vis-pix" checked>
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Mostrar e-mail</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pf-vis-email" checked>
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Mostrar telefone</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pf-vis-tel" checked>
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Mostrar endereço</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pf-vis-end">
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <button class="btn-main" onclick="salvarFormPerfil()">💾 Salvar perfil</button>
+        <button class="btn-danger-soft" id="btn-apagar-perfil">Apagar este perfil</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-perfil -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ABA: SERVIÇOS                              -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-servicos">
+  <div class="pcard">
+    <div class="pcard-head">🛠 Catálogo de serviços</div>
+    <div class="pcard-body">
+      <div id="admin-servicos-lista"></div>
+      <div class="admin-row-actions">
+        <button class="btn-admin-action" onclick="novoServico()">+ Novo serviço</button>
+        <button class="btn-admin-action primary" onclick="salvarAdminServicos()">✓ Salvar</button>
+      </div>
+      <p id="srv-msg" class="status-msg ok"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ABA: PACOTES                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-pacotes">
+  <div class="pcard">
+    <div class="pcard-head">📦 Pacotes inteligentes</div>
+    <div class="pcard-body">
+      <div id="admin-pacotes-lista"></div>
+      <div class="admin-row-actions">
+        <button class="btn-admin-action" onclick="novoPacote()">+ Novo pacote</button>
+        <button class="btn-admin-action primary" onclick="salvarAdminPacotes()">✓ Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ABA: CONTA                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-conta">
+
+  <!-- Atalhos -->
+  <div class="pcard">
+    <div class="pcard-head">⚡ Atalhos rápidos</div>
+    <div class="pcard-body">
+      <div class="quick-links">
+        <a class="quick-link" href="index.html"><span class="ql-ico">📝</span>Novo orçamento</a>
+        <a class="quick-link" href="historico.html"><span class="ql-ico">📚</span>Histórico</a>
+        <a class="quick-link" href="pacotes.html"><span class="ql-ico">📦</span>Ver pacotes</a>
+        <a class="quick-link" href="templates.html"><span class="ql-ico">📋</span>Templates</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup / Restauração -->
+  <div class="pcard">
+    <div class="pcard-head">💾 Backup &amp; Restauração</div>
+    <div class="pcard-body">
+      <p style="font-size:.8rem;color:var(--tx3);margin-bottom:12px;line-height:1.5">
+        Exporte um arquivo JSON com todos os seus dados (perfis, histórico, serviços, pacotes).
+        Guarde em local seguro para restaurar em outro dispositivo.
+      </p>
+      <div class="data-actions">
+        <button class="btn-data" onclick="exportarBackup()">📤 Exportar backup</button>
+        <button class="btn-data" onclick="importarBackup()">📥 Importar backup</button>
+      </div>
+
+      <!-- Storage bar -->
+      <div class="storage-bar-wrap">
+        <div class="storage-bar-label">
+          <span id="storage-used">Calculando...</span>
+          <span id="storage-pct">—</span>
+        </div>
+        <div class="storage-bar-track">
+          <div class="storage-bar-fill" id="storage-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="data-actions" style="margin-top:8px">
+        <button class="btn-data danger" onclick="limparHistoricoAdmin()">🗑 Limpar histórico</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alterar login -->
+  <div class="pcard">
+    <div class="pcard-head">🔐 Alterar acesso</div>
+    <div class="pcard-body">
       <div class="fg">
         <label class="lbl">Novo usuário</label>
-        <input type="text" id="new-user" placeholder="Novo usuário">
+        <input type="text" id="new-user" placeholder="Novo usuário" autocomplete="off">
       </div>
       <div class="fg">
         <label class="lbl">Nova senha</label>
-        <input type="password" id="new-pass" placeholder="Nova senha">
+        <input type="password" id="new-pass" placeholder="Nova senha" autocomplete="new-password">
       </div>
-      <button id="save-login" class="btn-admin btn-main">Salvar novo login</button>
-      <p id="save-msg" class="login-msg ok"></p>
-    </section>
+      <button id="save-login" class="btn-main">Salvar novo acesso</button>
+      <p id="save-msg" class="status-msg ok"></p>
+    </div>
+  </div>
 
-    <section class="admin-card">
-      <h2>Resumo</h2>
-      <div id="stats" class="stats-box"></div>
-    </section>
+</div><!-- /tab-conta -->
 
-    <section class="admin-card">
-      <h2>Gerenciar Serviços</h2>
-      <div id="admin-servicos-lista" style="display:grid;gap:8px;margin-bottom:12px"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <button class="btn-admin btn-main" onclick="novoServico()">+ Novo serviço</button>
-        <button class="btn-admin btn-main" onclick="salvarAdminServicos()">Salvar alterações</button>
+<!-- MODAL: Assinatura -->
+<div class="modal-overlay" id="modal-assinatura">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span>Desenhar assinatura</span>
+      <button onclick="fecharModalAssinatura()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.75rem;color:var(--tx3);margin-bottom:8px">Use o dedo ou mouse para assinar:</p>
+      <canvas id="canvas-assinatura" width="390" height="160"></canvas>
+      <div class="modal-actions">
+        <button onclick="limparCanvas()">Limpar</button>
+        <button onclick="fecharModalAssinatura()">Cancelar</button>
+        <button class="btn-ok" onclick="salvarCanvasAssinatura()">Salvar</button>
       </div>
-      <p id="srv-msg" class="login-msg ok" style="margin-top:8px"></p>
-    </section>
+    </div>
+  </div>
+</div>
 
-    <section class="admin-card">
-      <h2>Gerenciar Pacotes</h2>
-      <div id="admin-pacotes-lista" style="display:grid;gap:10px;margin-bottom:12px"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <button class="btn-admin btn-main" onclick="novoPacote()">+ Novo pacote</button>
-        <button class="btn-admin btn-main" onclick="salvarAdminPacotes()">Salvar alterações</button>
-      </div>
-    </section>
-  </main>
+<div class="toast" id="toast-msg"></div>
 
-  <script src="app.js"></script>
-  <script src="admin.js"></script>
-  
-
-
-
-
-
+<!-- ── NAV (mobile: bottom bar / desktop: sidebar) ── -->
 <nav class="bottom-nav">
-  <a class="bn-item " href="index.html">
-    <span class="bn-icon">🏠</span>
-    <span class="bn-lbl">Início</span>
-  </a>
-  <a class="bn-item " href="pacotes.html">
-    <span class="bn-icon">📦</span>
-    <span class="bn-lbl">Pacotes</span>
-  </a>
-  <a class="bn-item " href="historico.html">
-    <span class="bn-icon">📚</span>
-    <span class="bn-lbl">Histórico</span>
-  </a>
-  <a class="bn-item ativo" href="admin.html">
-    <span class="bn-icon">⚙️</span>
-    <span class="bn-lbl">Admin</span>
-  </a>
+  <a class="bn-item" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">Início</span></a>
+  <a class="bn-item" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">Pacotes</span></a>
+  <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">Histórico</span></a>
+  <a class="bn-item" href="templates.html"><span class="bn-icon">📋</span><span class="bn-lbl">Templates</span></a>
+  <a class="bn-item ativo" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">Painel</span></a>
 </nav>
+
+<script src="perfis.js"></script>
+<script src="app.js"></script>
+<script src="admin.js"></script>
+<script>
+/* ── ABAS ── */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('ativo'));
+    btn.classList.add('ativo');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('ativo');
+  });
+});
+
+/* ── SYNC TIPO RADIO ── */
+function syncTipoRadio(tipo) {
+  document.querySelectorAll('input[name="pf-tipo-radio"]').forEach(r => { r.checked = r.value === tipo; });
+  const show = (id, v) => { const el = document.getElementById(id); if (el) el.style.display = v; };
+  show('campo-pj',       tipo === 'pj' ? 'block' : 'none');
+  show('campo-pf',       tipo === 'pf' ? 'block' : 'none');
+  show('campo-documento',tipo === 'pf' ? 'block' : 'none');
+  show('campo-pj-doc',   tipo === 'pj' ? 'block' : 'none');
+}
+document.querySelectorAll('input[name="pf-tipo-radio"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('pf-tipo').value = r.value;
+    syncTipoRadio(r.value);
+  });
+});
+window.toggleTipoCampos = function(tipo) {
+  document.getElementById('pf-tipo').value = tipo;
+  syncTipoRadio(tipo);
+};
+
+/* ── OVERRIDE abrirEdicaoPerfil: sync tipo depois de popular form ── */
+/* SOLUÇÃO SEM OVERRIDE FRÁGIL: escuta evento customizado que perfis.js dispara */
+document.addEventListener('perfilCarregado', function(e) {
+  if (e.detail && e.detail.tipo) syncTipoRadio(e.detail.tipo);
+});
+
+/* ── OVERRIDE renderListaPerfis → mini stories ──
+   Feito de forma segura: apenas re-define a função depois que perfis.js já carregou
+   (este script está após o <script src="perfis.js">) ── */
+window.renderListaPerfis = function() {
+  const wrap = document.getElementById('perfis-mini-lista');
+  if (!wrap) return;
+  const perfis = getPerfis();
+  const ativoId = getPerfilAtivo()?.id;
+  wrap.innerHTML = perfis.map(p => {
+    const isAtivo = p.id === ativoId;
+    const nome = p.tipo === 'pj' ? (p.nomeEmpresa || p.nome) : p.nome;
+    const iniciais = nome.split(' ').slice(0,2).map(w => w[0]?.toUpperCase()).join('');
+    const avatarContent = p.logo
+      ? `<img src="${p.logo}" style="width:100%;height:100%;object-fit:cover">`
+      : `<span style="color:${p.cor};font-weight:700">${iniciais || '?'}</span>`;
+    return `<div class="perfil-mini-item ${isAtivo ? 'ativo' : ''}" onclick="selecionarPerfilAdmin(${p.id})">
+      <div class="perfil-mini-avatar" style="background:${p.cor}22">${avatarContent}</div>
+      <div class="perfil-mini-nome">${esc(nome)}</div>
+    </div>`;
+  }).join('') + `<div class="btn-novo-perfil-mini" onclick="novoPerfil()">
+    <div class="perfil-mini-avatar">+</div>
+    <div class="perfil-mini-nome" style="color:var(--tx3)">Novo</div>
+  </div>`;
+};
+
+/* Wrapper de seleção que atualiza topo sem override do original */
+window.selecionarPerfilAdmin = function(id) {
+  selecionarPerfil(id);
+  atualizarTopoComPerfil();
+};
+
+/* ── ATUALIZAR TOPO COM DADOS DO PERFIL ATIVO ── */
+function atualizarTopoComPerfil() {
+  const p = getPerfilAtivo();
+  if (!p) return;
+  const nome = p.tipo === 'pj' ? (p.nomeEmpresa || p.nome) : p.nome;
+  const partes = nome.trim().split(' ');
+  const primeiro = partes[0] || '';
+  const resto    = partes.slice(1).join(' ');
+  const el = document.getElementById('admin-profile-name');
+  if (el) el.innerHTML = esc(primeiro) + (resto ? ` <em>${esc(resto)}</em>` : '');
+  const initEl = document.getElementById('admin-initials');
+  const ring   = document.querySelector('.avatar-ring .avatar-inner');
+  if (p.logo && ring) {
+    ring.innerHTML = `<img src="${p.logo}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    const ini = nome.split(' ').slice(0,2).map(w => w[0]?.toUpperCase()).join('');
+    if (initEl) { initEl.textContent = ini || 'MM'; initEl.style.color = p.cor || 'var(--g3)'; }
+    if (ring && !p.logo) { ring.innerHTML = `<span class="avatar-initials" id="admin-initials" style="color:${p.cor || 'var(--g3)'}">${ini || 'MM'}</span>`; }
+  }
+  const handleEl = document.getElementById('admin-profile-handle');
+  if (handleEl && p.email) handleEl.textContent = p.email;
+  const badgeEl = document.getElementById('admin-profile-badge');
+  if (badgeEl) badgeEl.textContent = p.tipo === 'pj' ? 'Pessoa Jurídica' : 'Pessoa Física';
+}
+
+/* ── TOAST ── */
+window.toast = function(msg, cor) {
+  const el = document.getElementById('toast-msg');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.borderColor = cor || 'var(--brd)';
+  el.classList.add('on');
+  setTimeout(() => el.classList.remove('on'), 2400);
+};
+
+/* ── TROCAR AVATAR ──
+   Ativa aba perfil primeiro, depois abre upload ── */
+window.trocarAvatarAdmin = function() {
+  // Garante que a aba Perfil está ativa
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('ativo'));
+  document.querySelector('[data-tab="perfil"]').classList.add('ativo');
+  document.getElementById('tab-perfil').classList.add('ativo');
+  uploadImagem('logo', 'logo-preview', 'Logo');
+};
+
+/* ── salvarFormPerfil com atualização de topo segura ── */
+const _salvarOrigAdmin = window.salvarFormPerfil;
+window.salvarFormPerfil = function() {
+  _salvarOrigAdmin();
+  // Usa requestAnimationFrame para garantir que o DOM foi atualizado
+  requestAnimationFrame(() => {
+    atualizarTopoComPerfil();
+    renderStats();        // atualiza stats também
+    renderStorageBar();   // atualiza barra de storage
+  });
+};
+
+/* ── INIT ── */
+renderPerfisPage();
+atualizarTopoComPerfil();
+renderAdminServicos();
+renderAdminPacotes();
+</script>
 </body>
 </html>

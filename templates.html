@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0f"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Templates | Miguel Martins</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/><script src="config.js"></script>
+<script>
+if (!sessaoValida()) {
+  window.location.href = "login.html";
+}
+</script>
+<style>
+:root{
+  --g1:#16a04b;--g2:#0e7a38;--g3:#1dd668;
+  --r1:#9b1c35;--r2:#c0253d;--r3:#ff4466;
+  --bg:#0b0b0f;--bg2:#111116;--bg3:#18181f;--bg4:#1e1e27;
+  --brd:#2a2a36;--brd2:#343444;
+  --tx:#eeeef5;--tx2:#9999b0;--tx3:#5a5a72;
+  --rad:14px;--rads:9px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:70px}
+
+/* ── HEADER ─────────────────────────────────────────────────── */
+header{
+  background:linear-gradient(135deg,#0b2318 0%,#0d1a26 50%,#1a0b14 100%);
+  padding:22px 18px 18px;text-align:center;
+  border-bottom:1px solid var(--brd);position:relative;overflow:hidden;
+}
+header::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 0%,rgba(22,160,75,.18),transparent);
+  pointer-events:none;
+}
+#logo-wrap{margin-bottom:10px}
+#logo-wrap img{max-width:90px;max-height:60px;object-fit:contain;border-radius:8px}
+header h1{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:2px;position:relative;line-height:1}
+header h1 em{font-style:normal;color:var(--g3);text-shadow:0 0 24px rgba(29,214,104,.5)}
+header p.sub{font-size:.68rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-top:4px;position:relative}
+.header-nav{display:none}
+
+/* ── LAYOUT ─────────────────────────────────────────────────── */
+.page{max-width:1200px;margin:0 auto;padding:0 14px}
+.tpl-wrap{padding:16px 0 20px}
+
+/* ── TOOLBAR ─────────────────────────────────────────────────── */
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:10px;
+  margin-bottom:18px;align-items:center;
+}
+.toolbar-busca{
+  flex:1;min-width:180px;
+  background:var(--bg4);border:1.5px solid var(--brd);border-radius:var(--rads);
+  color:var(--tx);font-family:'Outfit',sans-serif;font-size:.88rem;
+  padding:10px 14px;
+}
+.toolbar-busca:focus{outline:none;border-color:var(--g1)}
+.toolbar-busca::placeholder{color:var(--tx3)}
+.filtro-cat{
+  background:var(--bg4);border:1.5px solid var(--brd);border-radius:var(--rads);
+  color:var(--tx);font-family:'Outfit',sans-serif;font-size:.85rem;
+  padding:10px 30px 10px 12px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239999b0' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+}
+.filtro-cat:focus{outline:none;border-color:var(--g1)}
+
+/* ── GALERIA ─────────────────────────────────────────────────── */
+#galeria-templates{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:14px;
+}
+.tpl-empty{
+  grid-column:1/-1;text-align:center;color:var(--tx2);
+  padding:60px 0;font-size:.9rem;
+}
+
+/* ── CARD ────────────────────────────────────────────────────── */
+.tpl-card{
+  background:var(--bg2);
+  border:1px solid var(--brd);
+  border-top:3px solid var(--tpl-cor, var(--g1));
+  border-radius:var(--rad);
+  padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+  animation:up .3s ease both;
+  transition:border-color .18s;
+}
+.tpl-card:hover{border-color:var(--tpl-cor, var(--g1))}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.tpl-card-top{display:flex;align-items:flex-start;gap:10px;position:relative}
+.tpl-icone{font-size:1.6rem;line-height:1;flex-shrink:0;margin-top:2px}
+.tpl-info{flex:1;min-width:0}
+.tpl-nome{
+  font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
+  color:var(--tx);line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tpl-cat{
+  display:inline-block;margin-top:4px;
+  font-size:.62rem;text-transform:uppercase;letter-spacing:1px;
+  padding:2px 8px;border-radius:20px;
+  background:color-mix(in srgb, var(--tpl-cor, var(--g1)) 20%, transparent);
+  color:var(--tpl-cor, var(--g3));border:1px solid color-mix(in srgb, var(--tpl-cor, var(--g1)) 40%, transparent);
+}
+
+/* ── MENU ────────────────────────────────────────────────────── */
+.tpl-menu{position:relative;flex-shrink:0}
+.tpl-menu-btn{
+  background:none;border:1.5px solid var(--brd);border-radius:8px;
+  color:var(--tx3);font-size:1.1rem;padding:3px 8px;cursor:pointer;
+  transition:all .15s;line-height:1;
+}
+.tpl-menu-btn:hover{border-color:var(--brd2);color:var(--tx2)}
+.tpl-dropdown{
+  display:none;position:absolute;right:0;top:calc(100% + 6px);
+  background:var(--bg3);border:1px solid var(--brd2);border-radius:var(--rads);
+  min-width:160px;z-index:100;overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.tpl-dropdown.open{display:block}
+.tpl-dropdown button{
+  display:block;width:100%;text-align:left;
+  padding:10px 14px;background:none;border:none;
+  color:var(--tx2);font-family:'Outfit',sans-serif;font-size:.85rem;
+  cursor:pointer;transition:background .12s;
+}
+.tpl-dropdown button:hover{background:var(--bg4);color:var(--tx)}
+.tpl-dropdown button.danger{color:var(--r3)}
+.tpl-dropdown button.danger:hover{background:rgba(155,28,53,.15)}
+
+/* ── CONTEÚDO DO CARD ─────────────────────────────────────────── */
+.tpl-desc{font-size:.78rem;color:var(--tx3);line-height:1.5}
+
+.tpl-itens-preview{
+  background:var(--bg4);border:1px solid var(--brd);border-radius:var(--rads);
+  padding:8px 10px;display:flex;flex-direction:column;gap:5px;
+}
+.tpl-item-row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:.78rem;gap:8px;
+}
+.tpl-item-row span:first-child{
+  color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.tpl-item-val{color:var(--g3);font-weight:600;white-space:nowrap;font-size:.76rem}
+.tpl-item-mais{font-size:.72rem;color:var(--tx3);margin-top:2px}
+
+.tpl-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tpl-total{display:flex;flex-direction:column;gap:1px}
+.tpl-total-lbl{font-size:.63rem;text-transform:uppercase;letter-spacing:.8px;color:var(--tx3)}
+.tpl-total-val{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--g3)}
+
+.tpl-acoes{display:flex;gap:7px;flex-wrap:wrap}
+.tpl-btn-editor{
+  padding:8px 12px;border-radius:var(--rads);font-family:'Syne',sans-serif;
+  font-size:.78rem;font-weight:700;cursor:pointer;transition:all .18s;border:none;
+  background:var(--bg3);border:1.5px solid var(--brd2);color:var(--tx2);
+}
+.tpl-btn-editor:hover{border-color:var(--g1);color:var(--g3);background:rgba(22,160,75,.08)}
+.tpl-btn-usar{
+  padding:8px 14px;border-radius:var(--rads);font-family:'Syne',sans-serif;
+  font-size:.78rem;font-weight:700;cursor:pointer;transition:all .18s;border:none;
+  background:linear-gradient(135deg,var(--g1),var(--g3));color:#fff;
+  box-shadow:0 3px 12px rgba(22,160,75,.3);
+}
+.tpl-btn-usar:hover{box-shadow:0 4px 18px rgba(22,160,75,.45)}
+.tpl-btn-usar:active,.tpl-btn-editor:active{transform:scale(.97)}
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--g1);color:#fff;padding:10px 20px;border-radius:30px;
+  font-size:.81rem;font-weight:600;transition:transform .28s ease;
+  z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+#toast.on{transform:translateX(-50%) translateY(0)}
+
+/* ── BOTÃO NOVO TEMPLATE ──────────────────────────────────────── */
+.btn-novo-tpl{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 18px;border:none;border-radius:var(--rads);
+  background:linear-gradient(135deg,var(--g1),var(--g3));color:#fff;
+  font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;
+  cursor:pointer;transition:all .18s;white-space:nowrap;
+  box-shadow:0 3px 14px rgba(22,160,75,.3);
+}
+.btn-novo-tpl:hover{box-shadow:0 4px 20px rgba(22,160,75,.45)}
+.btn-novo-tpl:active{transform:scale(.97)}
+
+/* ── BOTTOM NAV ──────────────────────────────────────────────── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;height:62px;
+  background:rgba(17,17,22,.97);border-top:1px solid var(--brd);
+  display:flex;align-items:stretch;z-index:999;backdrop-filter:blur(10px);
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;text-decoration:none;
+  color:var(--tx2);transition:color .18s;
+}
+.bn-item:hover,.bn-item.ativo{color:var(--g3)}
+.bn-icon{font-size:1.35rem;line-height:1}
+.bn-lbl{font-family:'Outfit',sans-serif;font-size:.62rem;letter-spacing:.8px;text-transform:uppercase;font-weight:500}
+
+/* ── DESKTOP ≥ 800px ──────────────────────────────────────────── */
+@media(min-width:800px){
+  body{padding-bottom:0}
+  .bottom-nav{display:none}
+  header{padding:14px 28px;text-align:left;display:flex;align-items:center;gap:18px}
+  header::after{display:none}
+  #logo-wrap{margin:0;flex-shrink:0}
+  #logo-wrap img{max-width:46px;max-height:36px}
+  header h1{font-size:1.45rem;letter-spacing:1px}
+  header p.sub{margin:0;font-size:.6rem}
+  .header-nav{display:flex;gap:4px;margin-left:auto}
+  .hn-item{
+    display:flex;align-items:center;gap:6px;text-decoration:none;
+    color:var(--tx2);padding:7px 13px;border-radius:9px;
+    transition:all .18s;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:500;
+    border:1px solid transparent;
+  }
+  .hn-item:hover{color:var(--g3);background:rgba(29,214,104,.06);border-color:var(--brd)}
+  .hn-item.ativo{color:var(--g3);background:rgba(29,214,104,.1);border-color:rgba(29,214,104,.3)}
+  .hn-icon{font-size:1rem;line-height:1}
+  .page{padding:0 24px}
+  #galeria-templates{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+}
+
+/* ── BOTTOM NAV → SIDEBAR (desktop ≥ 800px) ── */
+@media(min-width:800px){
+  body{padding-bottom:0}
+  .bottom-nav{position:fixed;top:0;left:0;bottom:0;right:auto;width:220px;height:100vh;
+    flex-direction:column;align-items:stretch;justify-content:flex-start;
+    border-top:none;border-right:1px solid var(--brd);padding:0 0 20px;gap:0}
+  .bottom-nav::before{content:'MM STUDIO';display:block;font-family:'Syne',sans-serif;
+    font-size:.95rem;font-weight:800;color:var(--g3);padding:22px 20px 20px;
+    letter-spacing:3px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+  .bn-item{flex:none;flex-direction:row;justify-content:flex-start;
+    gap:12px;padding:13px 20px;border-radius:0}
+  .bn-lbl{font-size:.8rem;letter-spacing:.5px}
+  .bn-icon{font-size:1.1rem}
+  .bn-item.ativo{background:rgba(22,160,75,.1);border-left:3px solid var(--g3);
+    padding-left:17px;color:var(--g3)}
+  .bn-item:not(.ativo):hover{background:rgba(255,255,255,.03)}
+  .toast{bottom:24px}
+}
+  header,.tpl-header{margin-left:220px}
+  .page,.tpl-wrap{margin-left:220px;padding-left:28px;padding-right:28px}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div id="logo-wrap">
+    <img src="IMG/LOGO.png" alt="LOGO" width="90" height="60">
+  </div>
+  <div>
+    <h1>MIGUEL <em>MARTINS</em></h1>
+    <p class="sub">Templates de Proposta · Fase 3</p>
+  </div>
+  <nav class="header-nav">
+    <a class="hn-item" href="index.html"><span class="hn-icon">🏠</span> Início</a>
+    <a class="hn-item" href="pacotes.html"><span class="hn-icon">📦</span> Pacotes</a>
+    <a class="hn-item" href="historico.html"><span class="hn-icon">📚</span> Histórico</a>
+    <a class="hn-item ativo" href="templates.html"><span class="hn-icon">📋</span> Templates</a>
+    <a class="hn-item" href="admin.html"><span class="hn-icon">👤</span> Painel</a>
+  </nav>
+</header>
+
+<div class="page">
+  <div class="tpl-wrap">
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <input
+        class="toolbar-busca"
+        id="busca-tpl"
+        type="text"
+        placeholder="Buscar template..."
+        oninput="renderGaleriaTemplates()"
+      />
+      <select class="filtro-cat" id="filtro-cat" onchange="renderGaleriaTemplates()">
+        <option value="todos">Todas as categorias</option>
+        <option value="branding">Branding</option>
+        <option value="social">Social Media</option>
+        <option value="evento">Evento</option>
+        <option value="web">Web</option>
+        <option value="video">Vídeo</option>
+        <option value="outro">Outro</option>
+      </select>
+      <button class="btn-novo-tpl" onclick="criarTemplateManual()">
+        + Novo template
+      </button>
+    </div>
+
+    <!-- GALERIA -->
+    <div id="galeria-templates"></div>
+
+  </div>
+</div>
+
+<div id="toast"></div><script src="perfis.js"></script><script src="app.js"></script><script src="templates.js"></script><script>
+/* ── Inicializar ── */
+renderGaleriaTemplates();
+
+/* ── Criar template manual (formulário vazio) ── */
+function criarTemplateManual() {
+  const nome = prompt("Nome do novo template:\n(Ex: Gestão de Redes Sociais, Produção de Podcast…)");
+  if (!nome || !nome.trim()) return;
+
+  const categoria = prompt(
+    "Categoria:\nbranding | social | evento | web | video | outro",
+    "outro"
+  ) || "outro";
+
+  const lista  = getTemplates();
+  const novoId = Math.max(0, ...lista.map(t => t.id)) + 1;
+
+  const tpl = {
+    id:            novoId,
+    nome:          nome.trim(),
+    categoria:     categoria.trim().toLowerCase(),
+    cor:           _corPorCategoria(categoria),
+    icone:         _iconePorCategoria(categoria),
+    descricao:     "",
+    itens:         [{ desc: "Novo serviço", qtd: 1, unit: 0, sub: 0 }],
+    condPagamento:  "50% na aprovação + 50% na entrega",
+    condRevisoes:   "Revisões incluídas conforme briefing aprovado",
+    condAlteracoes: "Alterações fora do escopo serão orçadas separadamente",
+    obs:            "",
+  };
+
+  lista.push(tpl);
+  salvarTemplates(lista);
+  renderGaleriaTemplates();
+  toastTpl("Template criado! Abra no editor para personalizar.", "#16a04b");
+}
+
+/* ── Helpers de cor/ícone expostos para criarTemplateManual() ── */
+function _corPorCategoria(cat) {
+  const mapa = {
+    branding:"#7c3aed",social:"#0891b2",evento:"#dc2626",
+    web:"#16a04b",video:"#ea580c",outro:"#9999b0",
+  };
+  return mapa[cat] || "#9999b0";
+}
+function _iconePorCategoria(cat) {
+  const mapa = {
+    branding:"🎨",social:"📱",evento:"📸",
+    web:"🌐",video:"🎬",outro:"📄",
+  };
+  return mapa[cat] || "📄";
+}
+
+/* ── Toast local ── */
+function toast(msg, cor) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.style.background = cor || "#16a04b";
+  el.classList.add("on");
+  setTimeout(() => el.classList.remove("on"), 2700);
+}
+</script>
+
+<!-- BOTTOM NAV MOBILE -->
+<nav class="bottom-nav">
+  <a class="bn-item" href="index.html">
+    <span class="bn-icon">🏠</span>
+    <span class="bn-lbl">Início</span>
+  </a>
+  <a class="bn-item" href="pacotes.html">
+    <span class="bn-icon">📦</span>
+    <span class="bn-lbl">Pacotes</span>
+  </a>
+  <a class="bn-item" href="historico.html">
+    <span class="bn-icon">📚</span>
+    <span class="bn-lbl">Histórico</span>
+  </a>
+  <a class="bn-item ativo" href="templates.html">
+    <span class="bn-icon">📋</span>
+    <span class="bn-lbl">Templates</span>
+  </a>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">Painel</span>
+  </a>
+</nav>
+
+</body>
+</html>

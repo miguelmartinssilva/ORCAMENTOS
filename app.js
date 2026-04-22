@@ -1,6 +1,3 @@
-const HIST_KEY     = "historico_orcamentos_miguel";
-const SERVICOS_KEY = "servicos_miguel";
-const PACOTES_KEY  = "pacotes_miguel";
 /* MEU_NUM agora vem do perfil ativo — veja perfis.js */
 function getMeuNumero() {
   if (typeof getPerfilAtivo === "function") {
@@ -40,9 +37,9 @@ function renderCatalogo() {
   if (!wrap) return;
   wrap.innerHTML = getServicos().map(s => `
     <button class="srv-btn" onclick="adicionarServico(${s.id})">
-      <span class="srv-nome">${s.nome}</span>
+      <span class="srv-nome">${esc(s.nome)}</span>
       <span class="srv-preco">${RS(s.preco)}</span>
-      <span class="srv-uni">${s.unidade}</span>
+      <span class="srv-uni">${esc(s.unidade)}</span>
     </button>
   `).join("");
 }
@@ -60,9 +57,9 @@ function renderAdminServicos() {
   if (!wrap) return;
   wrap.innerHTML = getServicos().map(s => `
     <div class="srv-admin-row" id="srow-${s.id}">
-      <input class="srv-admin-nome"  type="text"   value="${s.nome}"    placeholder="Nome"/>
+      <input class="srv-admin-nome"  type="text"   value="${esc(s.nome)}"    placeholder="Nome"/>
       <input class="srv-admin-preco" type="number" value="${s.preco}"   min="0" step="0.01" placeholder="Preco"/>
-      <input class="srv-admin-uni"   type="text"   value="${s.unidade}" placeholder="Unidade"/>
+      <input class="srv-admin-uni"   type="text"   value="${esc(s.unidade)}" placeholder="Unidade"/>
       <button class="srv-admin-del" onclick="deletarServico(${s.id})">×</button>
     </div>
   `).join("");
@@ -126,10 +123,10 @@ function renderPacotes() {
     return `
       <div class="pacote-card">
         <div class="pacote-top">
-          <span class="pacote-nome">${p.nome}</span>
+          <span class="pacote-nome">${esc(p.nome)}</span>
           ${economia > 0 ? `<span class="pacote-badge">-${pct}%</span>` : ""}
         </div>
-        <span class="pacote-desc">${p.descricao}</span>
+        <span class="pacote-desc">${esc(p.descricao)}</span>
         <div class="pacote-precos">
           ${economia > 0 ? `<span class="pacote-de">${RS(precoNormal)}</span>` : ""}
           <span class="pacote-por">${RS(p.precoTotal)}</span>
@@ -171,7 +168,7 @@ function verificarSugestaoPacote() {
           <span class="sugestao-icon">💡</span>
           <div class="sugestao-txt">
             <strong>Dica de economia!</strong>
-            <span>Com ${totalPostsAvulso} posts, o <b>${pacote.nome}</b> te economiza <b>${RS(economia)}</b>.</span>
+            <span>Com ${totalPostsAvulso} posts, o <b>${esc(pacote.nome)}</b> te economiza <b>${RS(economia)}</b>.</span>
           </div>
           <button class="sugestao-btn" onclick="adicionarPacote(${pacote.id})">Aplicar pacote</button>
           <button class="sugestao-fechar" onclick="this.closest('#sugestao-pacote').style.display='none'">×</button>
@@ -193,11 +190,11 @@ function renderAdminPacotes() {
   const optsServico = servicos.map(s => `<option value="${s.nome}">${s.nome}</option>`).join("");
   wrap.innerHTML = getPacotes().map(p => `
     <div class="srv-admin-row pacote-admin-row" id="prow-${p.id}">
-      <input class="pac-nome"  type="text"   value="${p.nome}"       placeholder="Nome do pacote"/>
+      <input class="pac-nome"  type="text"   value="${esc(p.nome)}"       placeholder="Nome do pacote"/>
       <select class="pac-serv">${optsServico.replace(`value="${p.servico}"`, `value="${p.servico}" selected`)}</select>
       <input class="pac-qtd"   type="number" value="${p.qtd}"        min="1" placeholder="Qtd"/>
       <input class="pac-preco" type="number" value="${p.precoTotal}" min="0" step="0.01" placeholder="Preço"/>
-      <input class="pac-desc"  type="text"   value="${p.descricao}"  placeholder="Descrição" style="grid-column:1/-2"/>
+      <input class="pac-desc"  type="text"   value="${esc(p.descricao)}"  placeholder="Descrição" style="grid-column:1/-2"/>
       <button class="srv-admin-del" onclick="deletarPacote(${p.id})">×</button>
     </div>
   `).join("");
@@ -252,8 +249,19 @@ function getHistorico() {
 
 function salvarHistorico(item) {
   const hist = getHistorico();
-  hist.unshift(item);
+  /* Modo edição: substituir o registro existente no lugar */
+  const idxExistente = hist.findIndex(h => h.id === item.id);
+  if (idxExistente >= 0) {
+    item.status = hist[idxExistente].status || "rascunho";
+    hist[idxExistente] = item;
+  } else {
+    hist.unshift(item);
+  }
   localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  /* Resetar modo edição após salvar */
+  window._orcEditandoId     = null;
+  window._orcEditandoNumero = null;
+  verificarStorage();
 }
 
 /* ─── EDIÇÃO RÁPIDA / DUPLICAR ORÇAMENTO ───────────────────────────────── */
@@ -267,6 +275,15 @@ function carregarOrcamento(id, modo) {
   const hist = getHistorico();
   const orc  = hist.find(h => h.id === id);
   if (!orc) { toast("Orçamento não encontrado", "#c0253d"); return; }
+
+  /* Guardar ID/número do orçamento sendo editado para não gerar novo número */
+  if (modo === "editar") {
+    window._orcEditandoId     = orc.id;
+    window._orcEditandoNumero = orc.numero;
+  } else {
+    window._orcEditandoId     = null;
+    window._orcEditandoNumero = null;
+  }
 
   // Limpar formulário sem chamar addRow no final
   $("cli-nome").value     = "";
@@ -330,10 +347,25 @@ function editarOrcamento(id)    { carregarOrcamento(id, "editar"); }
   const d = new Date();
   d.setDate(d.getDate() + 7);
   if ($("cli-validade")) $("cli-validade").value = d.toISOString().split("T")[0];
+  /* Máscara de WhatsApp no campo do cliente */
+  if (typeof aplicarMascaraWpp === "function") {
+    aplicarMascaraWpp($("cli-contato"));
+  }
   renderCatalogo();
   renderAdminServicos();
   renderPacotes();
   renderAdminPacotes();
+  /* Verificar espaço do storage na inicialização */
+  verificarStorage();
+  /* Carregar orçamento para edição/duplicação se vier do histórico */
+  const pendente = localStorage.getItem("orcamento_carregar");
+  if (pendente) {
+    localStorage.removeItem("orcamento_carregar");
+    try {
+      const { id, modo } = JSON.parse(pendente);
+      setTimeout(() => carregarOrcamento(id, modo), 100);
+    } catch { /* ignorar */ }
+  }
 })();
 
 /* ─── LINHAS DA TABELA ──────────────────────────────────────────────────── */
@@ -408,12 +440,28 @@ function recalc() {
 
 /* ─── MONTAR / GERAR PROPOSTA ───────────────────────────────────────────── */
 
+/* ── NUMERAÇÃO SEQUENCIAL (Fase 4) ─────────────────────────────
+   Formato: 001/2025, 002/2025…   Chave: orc_contador_v1
+   ──────────────────────────────────────────────────────────── */
+function getProximoNumero() {
+  const anoAtual = new Date().getFullYear();
+  let c;
+  try { c = JSON.parse(localStorage.getItem(CONTADOR_KEY)) || {}; } catch { c = {}; }
+  if (c.ano !== anoAtual) c = { ano: anoAtual, seq: 0 };
+  c.seq = (c.seq || 0) + 1;
+  localStorage.setItem(CONTADOR_KEY, JSON.stringify(c));
+  return String(c.seq).padStart(3, "0") + "/" + anoAtual;
+}
+
 function montarOrcamento() {
   const d   = recalc();
   const now = new Date();
+  /* Modo edição: preservar id e número originais */
+  const editando = !!window._orcEditandoId;
   return {
-    id:      Date.now(),
-    numero:  "MM-" + now.getFullYear() + String(now.getMonth()+1).padStart(2,"0") + String(now.getDate()).padStart(2,"0") + "-" + String(now.getHours()).padStart(2,"0") + String(now.getMinutes()).padStart(2,"0"),
+    id:      editando ? window._orcEditandoId     : Date.now(),
+    numero:  editando ? window._orcEditandoNumero : getProximoNumero(),
+    status:  "rascunho",
     data:    now.toLocaleDateString("pt-BR"),
     cliente: $("cli-nome").value.trim() || "(cliente nao informado)",
     contato: $("cli-contato").value.trim(),
@@ -441,7 +489,7 @@ function gerarProposta() {
   $("p-cli-nome").textContent = orc.cliente;
   $("p-cli-sub").textContent  = orc.tipo + (orc.contato ? " · " + orc.contato : "");
   $("p-itens").innerHTML = orc.itens.map(l =>
-    "<tr><td class='in'>" + l.desc + "</td><td class='iq'>" + l.qtd + "x</td><td class='iu'>" + RS(l.unit) + "</td><td class='sv'>" + RS(l.sub) + "</td></tr>"
+    "<tr><td class='in'>" + esc(l.desc) + "</td><td class='iq'>" + l.qtd + "x</td><td class='iu'>" + RS(l.unit) + "</td><td class='sv'>" + RS(l.sub) + "</td></tr>"
   ).join("");
 
   const adjs = [];
@@ -660,6 +708,13 @@ async function gerarPDF() {
 /* ─── LIMPAR ─────────────────────────────────────────────────────────────── */
 
 function limpar() {
+  /* Confirmar antes de apagar se houver dados preenchidos */
+  const temDados = $("cli-nome").value.trim() ||
+                   $("tbody").querySelectorAll("tr").length > 1 ||
+                   ($("tbody").querySelectorAll("tr").length === 1 &&
+                    $("tbody").querySelector("input[type=text]")?.value.trim());
+  if (temDados && !confirm("Limpar o formulário? Os dados não salvos serão perdidos.")) return;
+
   $("cli-nome").value    = "";
   $("cli-contato").value = "";
   $("obs").value         = "";
@@ -675,8 +730,11 @@ function limpar() {
   lid = 0;
   $("proposta-wrap").classList.remove("on");
   $("sugestao-pacote") && ($("sugestao-pacote").style.display = "none");
+  /* Limpar modo edição */
+  window._orcEditandoId     = null;
+  window._orcEditandoNumero = null;
   addRow("", 1, 200);
-  toast("Formulario limpo!", "#5a5a72");
+  toast("Formulário limpo!", "#5a5a72");
 }
 
 /* ─── EXPORTS ─────────────────────────────────────────────────────────────── */

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0b0f"/>
 <title>Orçamento | Miguel Martins</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="config.js"></script>
 <script>
-if (localStorage.getItem("miguel_admin_session") !== "on") {
+if (!sessaoValida()) {
   window.location.href = "login.html";
 }
 </script>
@@ -272,13 +272,14 @@ table td{padding:5px 3px;vertical-align:middle}
     <a class="hn-item ativo" href="index.html"><span class="hn-icon">🏠</span> Início</a>
     <a class="hn-item" href="pacotes.html"><span class="hn-icon">📦</span> Pacotes</a>
     <a class="hn-item" href="historico.html"><span class="hn-icon">📚</span> Histórico</a>
-    <a class="hn-item" href="admin.html"><span class="hn-icon">⚙️</span> Admin</a>
+    <a class="hn-item" href="templates.html"><span class="hn-icon">📋</span> Templates</a>
+    <a class="hn-item" href="admin.html"><span class="hn-icon">👤</span> Painel</a>
   </nav>
 </header>
 <div style="padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px">
   <span style="font-size:.65rem;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;flex-shrink:0">Perfil:</span>
   <select id="seletor-perfil" onchange="onMudarPerfilAtivo(this.value)" style="flex:1;background:var(--bg4);border:1.5px solid var(--brd);border-radius:8px;color:var(--tx);font-family:Outfit,sans-serif;font-size:.8rem;padding:5px 10px"></select>
-  <a href="perfis.html" style="font-size:.7rem;color:var(--g3);text-decoration:none;flex-shrink:0">Editar ›</a>
+  <a href="admin.html" style="font-size:.7rem;color:var(--g3);text-decoration:none;flex-shrink:0">Editar ›</a>
 </div>
 
 <div class="page">
@@ -508,10 +509,7 @@ table td{padding:5px 3px;vertical-align:middle}
 </div><!-- /layout -->
 </div><!-- /page -->
 
-<div id="toast"></div>
-<script src="perfis.js"></script>
-<script src="app.js"></script>
-<script>
+<div id="toast"></div><script src="perfis.js"></script><script src="app.js"></script><script>
 /* Espelha os valores do resumo mobile para a sidebar desktop */
 (function() {
   const orig = window.recalc;
@@ -552,10 +550,8 @@ table td{padding:5px 3px;vertical-align:middle}
   <a class="bn-item ativo" href="index.html"><span class="bn-icon">🏠</span><span class="bn-lbl">Início</span></a>
   <a class="bn-item" href="pacotes.html"><span class="bn-icon">📦</span><span class="bn-lbl">Pacotes</span></a>
   <a class="bn-item" href="historico.html"><span class="bn-icon">📚</span><span class="bn-lbl">Histórico</span></a>
-  <a class="bn-item" href="admin.html"><span class="bn-icon">⚙️</span><span class="bn-lbl">Admin</span></a>
-</nav>
-
-<script>
+  <a class="bn-item" href="admin.html"><span class="bn-icon">👤</span><span class="bn-lbl">Painel</span></a>
+</nav><script>
 // Abre o editor de proposta com os dados do orçamento atual
 function abrirEditor() {
   const d = recalc();
@@ -593,6 +589,13 @@ window.abrirEditor = abrirEditor;
     logoEl.src = "IMG/LOGO.png";
   }
 })();
+</script><script src="templates.js"></script><script>
+/* ── Carrega template se vier da página de templates ── */
+document.addEventListener("DOMContentLoaded", function() {
+  if (typeof carregarTemplateAplicado === "function") {
+    carregarTemplateAplicado();
+  }
+});
 </script>
 </body>
 </html>
