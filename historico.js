@@ -11,13 +11,6 @@ const STATUS_CONFIG = {
   perdida:  { label: "Perdida",  cor: "#ff4466", bg: "rgba(155,28,53,.18)",  borda: "rgba(255,68,102,.35)" },
 };
 
-const STATUS_CONFIG = {
-  rascunho: { label: "Rascunho", cor: "#5a5a72", bg: "rgba(90,90,114,.18)",  borda: "rgba(90,90,114,.35)"  },
-  enviada:  { label: "Enviada",  cor: "#6aaeff", bg: "rgba(26,74,122,.18)",  borda: "rgba(80,150,255,.35)" },
-  aceita:   { label: "Aceita",   cor: "#1dd668", bg: "rgba(22,160,75,.18)",  borda: "rgba(29,214,104,.35)" },
-  perdida:  { label: "Perdida",  cor: "#ff4466", bg: "rgba(155,28,53,.18)",  borda: "rgba(255,68,102,.35)" },
-};
-
 function getHistorico() {
   try { return JSON.parse(localStorage.getItem(HIST_KEY)) || []; }
   catch { return []; }
