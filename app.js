@@ -479,10 +479,14 @@ function montarOrcamento() {
   };
 }
 
+/* ─── ÚLTIMA PROPOSTA GERADA (evita re-chamar montarOrcamento) ── */
+window._ultimaProposta = null;
+
 function gerarProposta() {
   const d = recalc();
   if (!d.ls.length) { toast("Adicione pelo menos 1 servico", "#c0253d"); return; }
   const orc = montarOrcamento();
+  window._ultimaProposta = orc;
   salvarHistorico(orc);
   $("p-num").textContent      = "#" + orc.numero;
   $("p-data").textContent     = orc.data;
@@ -512,9 +516,9 @@ function gerarProposta() {
 /* ─── ENVIO E EXPORTAÇÃO ─────────────────────────────────────────────────── */
 
 function enviarWpp() {
-  const d = recalc();
-  if (!d.ls.length) { toast("Adicione pelo menos 1 servico", "#c0253d"); return; }
-  const orc = montarOrcamento();
+  if (!window._ultimaProposta) { gerarProposta(); }
+  if (!window._ultimaProposta) return;
+  const orc = window._ultimaProposta;
   const valStr = orc.validade ? new Date(orc.validade + "T12:00:00").toLocaleDateString("pt-BR") : "7 dias";
   const numeroCliente = (orc.contato || "").replace(/\D/g, "");
   if (!numeroCliente) { toast("Digite o WhatsApp do cliente", "#c0253d"); return; }
@@ -560,11 +564,11 @@ async function gerarPNG() {
 }
 
 async function gerarPDF() {
-  const d = recalc();
-  if (!d.ls.length) { toast("Adicione pelo menos 1 servico", "#c0253d"); return; }
+  if (!window._ultimaProposta) { gerarProposta(); }
+  if (!window._ultimaProposta) return;
   toast("Gerando PDF...", "#1a4a7a");
   try {
-    const orc = montarOrcamento();
+    const orc = window._ultimaProposta;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
     const W = 210, H = 297, ml = 16, mr = 16, cw = W - ml - mr;
@@ -593,9 +597,12 @@ async function gerarPDF() {
       img.src = "IMG/LOGO.png";
     });
 
-    C("#1dd668"); bold(); size(22); doc.text("MIGUEL MARTINS", W-mr, 20, { align: "right" });
+    const _pfHdr   = (typeof getPerfilAtivo === "function") ? getPerfilAtivo() : null;
+    const _nomeHdr = _pfHdr ? (_pfHdr.tipo === "pj" ? (_pfHdr.nomeEmpresa || _pfHdr.nome) : _pfHdr.nome) : "Miguel Martins";
+    const _endHdr  = (_pfHdr && _pfHdr.mostrarEndereco && _pfHdr.endereco) ? _pfHdr.endereco : "Taipas do Tocantins - TO";
+    C("#1dd668"); bold(); size(22); doc.text(_nomeHdr.toUpperCase(), W-mr, 20, { align: "right" });
     C("#9999b0"); bold(false); size(7.5); doc.text("DESIGNER GRAFICO & VIDEOMAKER", W-mr, 27, { align: "right" });
-    C("#5a5a72"); size(6.5); doc.text("Taipas do Tocantins  .  TO  .  Brasil", W-mr, 33, { align: "right" });
+    C("#5a5a72"); size(6.5); doc.text(_endHdr, W-mr, 33, { align: "right" });
 
     F("#16a04b"); doc.roundedRect(ml,38,62,9,2,2,"F");
     C("#ffffff"); bold(); size(7.5); doc.text("PROPOSTA COMERCIAL", ml+31, 44, { align: "center" });
@@ -733,6 +740,7 @@ function limpar() {
   /* Limpar modo edição */
   window._orcEditandoId     = null;
   window._orcEditandoNumero = null;
+  window._ultimaProposta    = null;
   addRow("", 1, 200);
   toast("Formulário limpo!", "#5a5a72");
 }

@@ -54,8 +54,7 @@ function sessaoValida() {
     const raw  = localStorage.getItem(ADMIN_SESSION_KEY);
     if (!raw) return false;
     const sess = JSON.parse(raw);
-    /* compatibilidade com sessão antiga (string "on") */
-    if (sess === "on" || sess?.on === true && !sess?.expires) return true;
+    /* exige sessão com expiração válida — sessões antigas sem expires são rejeitadas */
     if (sess?.on && sess?.expires && Date.now() < sess.expires) return true;
     /* sessão expirada — limpar */
     localStorage.removeItem(ADMIN_SESSION_KEY);
